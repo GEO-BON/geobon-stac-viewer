@@ -1,29 +1,29 @@
 {
   "files": {
-    "main.css": "/inventaires/static/css/main.90b99a4e.css",
-    "main.js": "/inventaires/static/js/main.ee4013ed.js",
-    "static/media/markers_default@2x.png": "/inventaires/static/media/markers_default@2x.9593b3c72f31a3f4b403.png",
-    "static/media/markers_default.png": "/inventaires/static/media/markers_default.c832adf43b69321540d3.png",
-    "static/media/bq-icons.svg": "/inventaires/static/media/bq-icons.60c23a688818d6f19ba5.svg",
-    "static/media/Nature-collection.ttf": "/inventaires/static/media/Nature-collection.9372ed9c8e7fe00405fe.ttf",
-    "static/media/logo-color-dark-mode-fr.png": "/inventaires/static/media/logo-color-dark-mode-fr.45ff59d1cea69673e507.png",
-    "static/media/Animals.woff": "/inventaires/static/media/Animals.9032848b0c8fa674f87d.woff",
-    "static/media/Nature-collection.woff": "/inventaires/static/media/Nature-collection.4241bf4ac5193a068cd4.woff",
-    "static/media/logo-non-color-dark-mode-fr.png": "/inventaires/static/media/logo-non-color-dark-mode-fr.263eb558a16984f3636d.png",
-    "static/media/Animals.woff2": "/inventaires/static/media/Animals.a9580f731dc79beaa795.woff2",
-    "static/media/Nature.woff": "/inventaires/static/media/Nature.2569c6a0e8934f8226c6.woff",
-    "static/media/Nature.woff2": "/inventaires/static/media/Nature.73168f5f6cf4cde7b634.woff2",
-    "static/media/bq-icons.eot": "/inventaires/static/media/bq-icons.08fefe23ba4e679d4b3d.eot",
-    "static/media/bq-icons.ttf": "/inventaires/static/media/bq-icons.23bb065d00eb83c2610e.ttf",
-    "static/media/bq-icons.woff": "/inventaires/static/media/bq-icons.1e302503a4f3fba1ea60.woff",
-    "static/media/Custom.woff": "/inventaires/static/media/Custom.ed70824d1aa9884af2e9.woff",
-    "static/media/Custom.woff2": "/inventaires/static/media/Custom.6c289021b06e1a9ca782.woff2",
-    "index.html": "/inventaires/index.html",
-    "main.90b99a4e.css.map": "/inventaires/static/css/main.90b99a4e.css.map",
-    "main.ee4013ed.js.map": "/inventaires/static/js/main.ee4013ed.js.map"
+    "main.css": "/apps/io-layers/static/css/main.c52b9198.css",
+    "main.js": "/apps/io-layers/static/js/main.549e028d.js",
+    "static/media/markers_default@2x.png": "/apps/io-layers/static/media/markers_default@2x.9593b3c72f31a3f4b403.png",
+    "static/media/markers_default.png": "/apps/io-layers/static/media/markers_default.c832adf43b69321540d3.png",
+    "static/media/bq-icons.svg": "/apps/io-layers/static/media/bq-icons.60c23a688818d6f19ba5.svg",
+    "static/media/Nature-collection.ttf": "/apps/io-layers/static/media/Nature-collection.9372ed9c8e7fe00405fe.ttf",
+    "static/media/logo-color-dark-mode-fr.png": "/apps/io-layers/static/media/logo-color-dark-mode-fr.45ff59d1cea69673e507.png",
+    "static/media/Animals.woff": "/apps/io-layers/static/media/Animals.9032848b0c8fa674f87d.woff",
+    "static/media/Nature-collection.woff": "/apps/io-layers/static/media/Nature-collection.4241bf4ac5193a068cd4.woff",
+    "static/media/logo-non-color-dark-mode-fr.png": "/apps/io-layers/static/media/logo-non-color-dark-mode-fr.263eb558a16984f3636d.png",
+    "static/media/Animals.woff2": "/apps/io-layers/static/media/Animals.a9580f731dc79beaa795.woff2",
+    "static/media/Nature.woff": "/apps/io-layers/static/media/Nature.2569c6a0e8934f8226c6.woff",
+    "static/media/Nature.woff2": "/apps/io-layers/static/media/Nature.73168f5f6cf4cde7b634.woff2",
+    "static/media/bq-icons.eot": "/apps/io-layers/static/media/bq-icons.08fefe23ba4e679d4b3d.eot",
+    "static/media/bq-icons.ttf": "/apps/io-layers/static/media/bq-icons.23bb065d00eb83c2610e.ttf",
+    "static/media/bq-icons.woff": "/apps/io-layers/static/media/bq-icons.1e302503a4f3fba1ea60.woff",
+    "static/media/Custom.woff": "/apps/io-layers/static/media/Custom.ed70824d1aa9884af2e9.woff",
+    "static/media/Custom.woff2": "/apps/io-layers/static/media/Custom.6c289021b06e1a9ca782.woff2",
+    "index.html": "/apps/io-layers/index.html",
+    "main.c52b9198.css.map": "/apps/io-layers/static/css/main.c52b9198.css.map",
+    "main.549e028d.js.map": "/apps/io-layers/static/js/main.549e028d.js.map"
   },
   "entrypoints": [
-    "static/css/main.90b99a4e.css",
-    "static/js/main.ee4013ed.js"
+    "static/css/main.c52b9198.css",
+    "static/js/main.549e028d.js"
   ]
 }

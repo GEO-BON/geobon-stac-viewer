@@ -1,5 +1,6 @@
 {
   "name": "io-layers",
+  "homepage" : "/apps/io-layers/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

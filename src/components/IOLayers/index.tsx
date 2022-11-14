@@ -42,8 +42,14 @@ export default function IOLayers(props: any) {
   useEffect(() => {
     if (currentLayer !== "" && typeof currentLayer !== "undefined") {
       GetCOGStats(currentLayerURL).then((l: any) => {
-        const tiler = `http://tiler.biodiversite-quebec.ca/stac/tiles/{z}/{x}/{y}`;
-        const data = l.data[currentLayerAssetName][1];
+        const tiler = `https://tiler.biodiversite-quebec.ca/cog/tiles/{z}/{x}/{y}`;
+        let data = [];
+        if (Object.keys(l).includes("data")) {
+          data = l.data[1];
+        } else {
+          data = l["currentLayerAssetName"][1];
+        }
+
         const obj = {
           assets: currentLayerAssetName,
           colormap_name: "inferno",

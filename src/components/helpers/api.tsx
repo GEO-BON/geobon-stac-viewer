@@ -102,7 +102,7 @@ export const GetStac = async (endpoint: string, paramObj: any) => {
 export const GetCOGStats = async (link: any) => {
   let result;
   const base_url =
-    `http://tiler.biodiversite-quebec.ca/stac/statistics?url=${link}` as string;
+    `https://tiler.biodiversite-quebec.ca/cog/statistics?url=${link}` as string;
   try {
     result = await axios.get(`${base_url}`, {});
   } catch (error) {

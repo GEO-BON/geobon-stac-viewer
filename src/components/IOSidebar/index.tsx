@@ -41,7 +41,9 @@ function IOSidebar(props: any) {
   const handleLayerChange = (e: any) => {
     GetStac(`/collections/${collection}/items/${e.value}`, {}).then(
       (res: any) => {
-        setCurrentLayerURL(res.data.links[3].href);
+        setCurrentLayerURL(
+          res.data.assets[Object.keys(res.data.assets)[0]].href
+        );
         setCurrentLayerAssetName(Object.keys(res.data.assets)[0]);
         setCurrentLayer(e.value);
       }
