@@ -12,7 +12,7 @@ import L from "leaflet";
  * @returns component
  */
 function MapWrapper(props: any) {
-  const { currentLayerTiles } = props;
+  const { selectedLayerTiles } = props;
   //const generalState = useSelector((state: any) => state.reducerState);
   //const drawerOpen = useSelector((state: any) => state.reducerState.drawerOpen);
   const [mapWidth, setMapWidth] = useState("100vw");

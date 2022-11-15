@@ -14,25 +14,25 @@ import { GetCOGStats } from "../helpers/api";
 
 export default function IOLayers(props: any) {
   const { textInCard, cardBGHref, onClick } = props;
-  const [currentLayer, setCurrentLayer] = useState("");
-  const [currentLayerAssetName, setCurrentLayerAssetName] = useState("");
-  const [currentLayerURL, setCurrentLayerURL] = useState("");
-  const [currentLayerTiles, setCurrentLayerTiles] = useState("");
+  const [selectedLayer, setSelectedLayer] = useState("");
+  const [selectedLayerAssetName, setSelectedLayerAssetName] = useState("");
+  const [selectedLayerURL, setSelectedLayerURL] = useState("");
+  const [selectedLayerTiles, setSelectedLayerTiles] = useState("");
   const ref = useRef();
 
   const IOHeaderProps = {
-    setCurrentLayer,
+    setSelectedLayer,
   };
 
   const IOSideBarProps = {
-    setCurrentLayer,
+    setSelectedLayer,
   };
 
   const sidebarProps = {
-    currentLayer,
-    setCurrentLayer,
-    setCurrentLayerURL,
-    setCurrentLayerAssetName,
+    selectedLayer,
+    setSelectedLayer,
+    setSelectedLayerURL,
+    setSelectedLayerAssetName,
   };
 
   const leftContentProps = {
@@ -40,31 +40,31 @@ export default function IOLayers(props: any) {
   };
 
   useEffect(() => {
-    if (currentLayer !== "" && typeof currentLayer !== "undefined") {
-      GetCOGStats(currentLayerURL).then((l: any) => {
+    if (selectedLayerURL !== "" && typeof selectedLayerURL !== "undefined") {
+      GetCOGStats(selectedLayerURL).then((l: any) => {
         const tiler = `https://tiler.biodiversite-quebec.ca/cog/tiles/{z}/{x}/{y}`;
         let data = [];
         if (Object.keys(l).includes("data")) {
           data = l.data[1];
         } else {
-          data = l["currentLayerAssetName"][1];
+          data = l[selectedLayerAssetName][1];
         }
 
         const obj = {
-          assets: currentLayerAssetName,
+          assets: selectedLayerAssetName,
           colormap_name: "inferno",
         };
         const rescale = `${data.percentile_2},${data.percentile_98}`;
         const params = new URLSearchParams(obj).toString();
-        setCurrentLayerTiles(
-          `${tiler}?url=${currentLayerURL}&rescale=${rescale}&${params}`
+        setSelectedLayerTiles(
+          `${tiler}?url=${selectedLayerURL}&rescale=${rescale}&${params}`
         );
       });
     }
-  }, [currentLayer]);
+  }, [selectedLayerURL]);
 
   const rightContentProps = {
-    currentLayerTiles: currentLayerTiles,
+    selectedLayerTiles: selectedLayerTiles,
   };
 
   return (

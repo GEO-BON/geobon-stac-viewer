@@ -8,7 +8,7 @@ import L from "leaflet";
  * @param props
  */
 function CustomLayer(props: any) {
-  const { currentLayerTiles } = props;
+  const { selectedLayerTiles } = props;
   const [tiles, setTiles] = useState(<></>);
   const [basemap, setBasemap] = useState("carto");
   const map = useMap();
@@ -26,21 +26,24 @@ function CustomLayer(props: any) {
   };
 
   useEffect(() => {
-    if (currentLayerTiles !== "" && typeof currentLayerTiles !== "undefined") {
+    if (
+      selectedLayerTiles !== "" &&
+      typeof selectedLayerTiles !== "undefined"
+    ) {
       map.eachLayer(function (layer: any) {
         if (layer.options.attribution === "io") {
           map.removeLayer(layer);
         }
       });
       let layerId = Math.random();
-      const layer = L.tileLayer(currentLayerTiles, {
+      const layer = L.tileLayer(selectedLayerTiles, {
         attribution: "io",
       });
       const container = map;
-      //layerRef.current = layer;
+      //layerRef.selected = layer;
       container.addLayer(layer);
     }
-  }, [currentLayerTiles]);
+  }, [selectedLayerTiles]);
 
   useEffect(() => {
     const layer = L.tileLayer(basemaps[basemap], {

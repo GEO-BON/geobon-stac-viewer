@@ -7,7 +7,7 @@ import { CustomMapContainer } from "./custommapstyles";
  * @param props
  */
 function CustomMap(props: any) {
-  const { currentLayerTiles } = props;
+  const { selectedLayerTiles } = props;
 
   /**
    * props for wrapper components
