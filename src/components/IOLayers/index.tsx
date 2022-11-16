@@ -11,6 +11,8 @@ import LeftContentGroup from "../LeftContentGroup";
 import RightContentGroup from "../RightContentGroup";
 import { AppContainer, BottomNavBarContainer, GlobalStyle } from "src/styles";
 import { GetCOGStats } from "../helpers/api";
+import cmaps from "../helpers/cmaps";
+import chroma from "chroma-js";
 
 export default function IOLayers(props: any) {
   const { textInCard, cardBGHref, onClick } = props;
@@ -39,6 +41,8 @@ export default function IOLayers(props: any) {
     sidebarContent: <IOSidebar {...sidebarProps} />,
   };
 
+  const scale = chroma.scale(cmaps.hot);
+
   useEffect(() => {
     if (selectedLayerURL !== "" && typeof selectedLayerURL !== "undefined") {
       GetCOGStats(selectedLayerURL).then((l: any) => {
@@ -52,7 +56,8 @@ export default function IOLayers(props: any) {
 
         const obj = {
           assets: selectedLayerAssetName,
-          colormap_name: "inferno",
+          colormap_name: "cmrmap",
+          //expression
         };
         const rescale = `${data.percentile_2},${data.percentile_98}`;
         const params = new URLSearchParams(obj).toString();
@@ -61,7 +66,7 @@ export default function IOLayers(props: any) {
         );
       });
     }
-  }, [selectedLayerURL]);
+  }, [selectedLayerURL, cmaps]);
 
   const rightContentProps = {
     selectedLayerTiles: selectedLayerTiles,

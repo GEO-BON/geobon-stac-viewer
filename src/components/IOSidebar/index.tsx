@@ -46,55 +46,78 @@ function IOSidebar(props: any) {
 
   const variableList = [
     {
-      option: "tas",
+      option: "Mean daily air temperature - tas",
       value: "tas",
     },
     {
-      option: "tasmin",
+      option: "Mean daily minimum air temperature - tasmin",
       value: "tasmin",
     },
     {
-      option: "tasmax",
+      option: "Mean daily maximum 2m air temperature - tasmax",
       value: "tasmax",
     },
     {
-      option: "pet",
+      option: "Cloud area fraction - clt",
+      value: "clt",
+    },
+    {
+      option: "Climate moisture index - cmi",
+      value: "cmi",
+    },
+    {
+      option: "Near-surface relative humidity - hurs",
+      value: "hurs",
+    },
+    {
+      option: "Potential evapotranspiration - pet_penman",
       value: "pet_penman",
     },
     {
-      option: "sfcWind",
+      option: "Precipitation amount - pr",
+      value: "pr",
+    },
+    {
+      option: "Near-surface wind speed - sfcWind",
       value: "sfcWind",
     },
+    {
+      option: "Vapor pressure deficit",
+      value: "vpd",
+    },
   ];
+
   const handleCollectionChange = (e: any) => {
     setCollection(e.value);
-    GetStac(`/collections/${e.value}/items`, { limit: 100 }).then(
-      (res: any) => {
-        let items: any = "";
-        if (e.value === "chelsa-monthly") {
-          setShowYears(true);
-          setShowMonths(true);
-          setShowVariable(true);
-          setShowLayers(false);
-          items = variableList;
-        } else {
-          setShowMonths(false);
-          setShowYears(false);
-          setShowVariable(false);
-          setShowLayers(true);
+    if (e.value === "chelsa-monthly") {
+      setShowYears(true);
+      setShowMonths(true);
+      setShowVariable(true);
+      setShowLayers(false);
+      setLayerList([]);
+    } else {
+      setShowMonths(false);
+      setShowYears(false);
+      setShowVariable(false);
+      setShowLayers(true);
+      GetStac(`/collections/${e.value}/items`, { limit: 100 }).then(
+        (res: any) => {
+          let items: any = "";
           items = res.data.features.map((c: any) => ({
             option: c.properties.description,
             value: c.id,
           }));
+          setLayerList(items);
         }
-        setLayerList(items);
-      }
-    );
+      );
+    }
   };
 
   const handleLayerChange = (e: any = "") => {
+    let val = "";
     if (e !== "") {
       setSelectedLayer(e.value);
+      val = e.value;
     } else {
       if (collection === "chelsa-monthly") {
         let month = "";
@@ -103,18 +126,16 @@ function IOSidebar(props: any) {
         } else {
           month = selectedMonth.toString();
         }
-        const val = `${selectedVariable}_${month}_${selectedYear}`;
+        val = `${selectedVariable}_${month}_${selectedYear}`;
         setSelectedLayer(val);
       }
     }
-    GetStac(`/collections/${collection}/items/${selectedLayer}`, {}).then(
-      (res: any) => {
-        setSelectedLayerURL(
-          res.data.assets[Object.keys(res.data.assets)[0]].href
-        );
-        setSelectedLayerAssetName(Object.keys(res.data.assets)[0]);
-      }
-    );
+    GetStac(`/collections/${collection}/items/${val}`, {}).then((res: any) => {
+      setSelectedLayerURL(
+        res.data.assets[Object.keys(res.data.assets)[0]].href
+      );
+      setSelectedLayerAssetName(Object.keys(res.data.assets)[0]);
+    });
   };
 
   const handleYearChange = (e: any) => {

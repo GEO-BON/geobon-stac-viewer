@@ -11,18 +11,10 @@ import { BQDrawer } from "bq-react-lib";
  */
 const RightContentGroup = (props: any) => {
   const generalState = useSelector((state: any) => state.reducerState);
-  const { currentLayerTiles } = props;
-
-  /**
-   *
-   */
-  const customMapProps = {
-    currentLayerTiles,
-  };
 
   return (
     <RightContent style={{ width: "100vw" }}>
-      <CustomMap {...customMapProps} />
+      <CustomMap {...props} />
     </RightContent>
   );
 };
