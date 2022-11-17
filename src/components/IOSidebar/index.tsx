@@ -105,7 +105,7 @@ function IOSidebar(props: any) {
       setShowYears(false);
       setShowVariable(false);
       setShowLayers(true);
-      GetStac(`/collections/${e.value}/items`, { limit: 100 }).then(
+      GetStac(`/collections/${e.value}/items`, { limit: 200 }).then(
         (res: any) => {
           let items: any = "";
 
@@ -115,6 +115,8 @@ function IOSidebar(props: any) {
               option = c.properties.year;
             } else if (c.collection === "chelsa-clim-proj") {
               option = `${c.properties.variable}-${c.properties.rcp}-${c.properties.model}`;
+            } else if (c.collection === "soilgrids") {
+              option = `${c.properties.variable}-${c.properties.depth}`;
             }
             return {
               option: option,
