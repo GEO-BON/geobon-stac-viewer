@@ -2,13 +2,15 @@ import React, { useState, useEffect, useRef } from "react";
 import _ from "underscore";
 import { Marker, Tooltip, useMap } from "react-leaflet";
 import L from "leaflet";
+import { ColorPicker } from "../../ColormapPicker";
 
 /**
  *
  * @param props
  */
 function CustomLayer(props: any) {
-  const { selectedLayerTiles } = props;
+  const { selectedLayerTiles, legend, setColormap, colormap, colormapList } =
+    props;
   const [tiles, setTiles] = useState(<></>);
   const [basemap, setBasemap] = useState("carto");
   const map = useMap();
@@ -42,7 +44,14 @@ function CustomLayer(props: any) {
       const container = map;
       //layerRef.selected = layer;
       container.addLayer(layer);
+      if (Object.keys(legend).length !== 0) {
+        legend.addTo(map);
+      }
     }
+
+    return () => {
+      if (legend && Object.keys(legend).length !== 0) legend.remove();
+    };
   }, [selectedLayerTiles]);
 
   useEffect(() => {
@@ -53,11 +62,13 @@ function CustomLayer(props: any) {
     container.addLayer(layer);
   }, []);
 
-  /**
-   * props for Customlayer component
-   */
-
-  return <></>;
+  return (
+    <ColorPicker
+      setColormap={setColormap}
+      colormap={colormap}
+      colormapList={colormapList}
+    />
+  );
 }
 
 export default CustomLayer;

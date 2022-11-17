@@ -20,6 +20,11 @@ function IOSidebar(props: any) {
     selectedLayer,
     setSelectedLayerURL,
     setSelectedLayerAssetName,
+    setColormap,
+    setColormapList,
+    qualcmaps,
+    quantcmaps,
+    colormap,
   } = props;
   const [collectionList, setCollectionList] = useState([]);
   const [collection, setCollection] = useState("");
@@ -44,7 +49,7 @@ function IOSidebar(props: any) {
     })
   );
 
-  const variableList = [
+  const chelsaVariableList = [
     {
       option: "Mean daily air temperature - tas",
       value: "tas",
@@ -103,10 +108,19 @@ function IOSidebar(props: any) {
       GetStac(`/collections/${e.value}/items`, { limit: 100 }).then(
         (res: any) => {
           let items: any = "";
-          items = res.data.features.map((c: any) => ({
-            option: c.properties.description,
-            value: c.id,
-          }));
+
+          items = res.data.features.map((c: any) => {
+            let option = c.properties.description;
+            if (c.collection === "esacci-lc") {
+              option = c.properties.year;
+            } else if (c.collection === "chelsa-clim-proj") {
+              option = `${c.properties.variable}-${c.properties.rcp}-${c.properties.model}`;
+            }
+            return {
+              option: option,
+              value: c.id,
+            };
+          });
           setLayerList(items);
         }
       );
@@ -129,6 +143,13 @@ function IOSidebar(props: any) {
         val = `${selectedVariable}_${month}_${selectedYear}`;
         setSelectedLayer(val);
       }
+    }
+    if (val.indexOf("-lc-") !== -1) {
+      setColormap("tab10");
+      setColormapList(qualcmaps);
+    } else if (qualcmaps.includes(colormap)) {
+      setColormap("inferno");
+      setColormapList(quantcmaps);
     }
     GetStac(`/collections/${collection}/items/${val}`, {}).then((res: any) => {
       setSelectedLayerURL(
@@ -214,7 +235,7 @@ function IOSidebar(props: any) {
           <Item>
             <SelectorTitle>{`Variable`}</SelectorTitle>
             <Selector
-              selectorList={variableList}
+              selectorList={chelsaVariableList}
               value={selectedVariable}
               selectorId="variable"
               onValueChange={handleVariableChange}
