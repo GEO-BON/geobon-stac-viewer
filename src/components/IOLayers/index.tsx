@@ -16,8 +16,8 @@ import { createRangeLegendControl } from "../SimpleLegend";
 
 export default function IOLayers(props: any) {
   const { textInCard, cardBGHref, onClick } = props;
-  const quantcmaps = ["inferno", "spectral", "hot", "cmrmap"];
-  const qualcmaps = ["tab10", "tab20"];
+  const quantcmaps = ["inferno", "spectral", "terrain", "coolwarm"];
+  const qualcmaps = ["tab10", "tab20", "tab20b"];
   const [selectedLayer, setSelectedLayer] = useState("");
   const [selectedLayerAssetName, setSelectedLayerAssetName] = useState("");
   const [selectedLayerURL, setSelectedLayerURL] = useState("");

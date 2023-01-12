@@ -146,7 +146,7 @@ function IOSidebar(props: any) {
         setSelectedLayer(val);
       }
     }
-    if (val.indexOf("-lc-") !== -1) {
+    if (val.indexOf("-lc") !== -1) {
       setColormap("tab10");
       setColormapList(qualcmaps);
     } else if (qualcmaps.includes(colormap)) {
