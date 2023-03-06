@@ -5,6 +5,7 @@ import CustomLayer from "../CustomLayer";
 import { useSelector, useDispatch } from "react-redux";
 import { MapWrapperContainer } from "../custommapstyles";
 import L from "leaflet";
+import { useParams } from "react-router-dom";
 
 /**
  *

@@ -12,12 +12,11 @@ import {
 } from "src/components/Sidebar/SidebarForms/sidebarformstyles";
 import _ from "underscore";
 import { GetStac } from "../helpers/api";
+import { useNavigate, useParams } from "react-router-dom";
 
 function IOSidebar(props: any) {
   const {
     t = (text: string) => text,
-    setSelectedLayer,
-    selectedLayer,
     setSelectedLayerURL,
     setSelectedLayerAssetName,
     setColormap,
@@ -27,7 +26,8 @@ function IOSidebar(props: any) {
     colormap,
   } = props;
   const [collectionList, setCollectionList] = useState([]);
-  const [collection, setCollection] = useState("");
+  const [selectedCollection, setSelectedCollection] = useState("");
+  const [selectedLayer, setSelectedLayer] = useState("");
   const [layerList, setLayerList] = useState([]);
   const [showLayers, setShowLayers] = useState(true);
   const [showMonths, setShowMonths] = useState(false);
@@ -36,6 +36,14 @@ function IOSidebar(props: any) {
   const [showVariable, setShowVariable] = useState(false);
   const [selectedYear, setSelectedYear] = useState(1980);
   const [selectedMonth, setSelectedMonth] = useState(1);
+  const navigate = useNavigate();
+
+  interface Params {
+    collection: string;
+    item: string;
+  }
+  const { collection, item } = useParams<keyof Params>() as Params;
+
   const yearList = Array.from({ length: 40 }, (_, i) => i + 1980).map(
     (v: any) => ({
       option: v,
@@ -93,13 +101,20 @@ function IOSidebar(props: any) {
   ];
 
   const handleCollectionChange = (e: any) => {
-    setCollection(e.value);
+    setSelectedCollection(e.value);
     if (e.value === "chelsa-monthly") {
       setShowYears(true);
       setShowMonths(true);
       setShowVariable(true);
       setShowLayers(false);
       setLayerList([]);
+      //Route set the item
+      if (e.layerSelected !== "") {
+        const str = e.layerSelected.split("_");
+        setSelectedVariable(str[0]);
+        setSelectedYear(str[2]);
+        setSelectedMonth(parseInt(str[1]));
+      }
     } else {
       setShowMonths(false);
       setShowYears(false);
@@ -124,6 +139,10 @@ function IOSidebar(props: any) {
             };
           });
           setLayerList(items);
+          if (e.layerSelected !== undefined && e.layerSelected !== "") {
+            //Route set the item
+            setSelectedLayer(e.layerSelected);
+          }
         }
       );
     }
@@ -132,10 +151,9 @@ function IOSidebar(props: any) {
   const handleLayerChange = (e: any = "") => {
     let val = "";
     if (e !== "") {
-      setSelectedLayer(e.value);
       val = e.value;
     } else {
-      if (collection === "chelsa-monthly") {
+      if (selectedCollection === "chelsa-monthly") {
         let month = "";
         if (selectedMonth < 10) {
           month = `0${selectedMonth}`;
@@ -143,9 +161,11 @@ function IOSidebar(props: any) {
           month = selectedMonth.toString();
         }
         val = `${selectedVariable}_${month}_${selectedYear}`;
-        setSelectedLayer(val);
+      } else {
+        val = selectedLayer;
       }
     }
+
     if (val.indexOf("-lc") !== -1) {
       setColormap("tab10");
       setColormapList(qualcmaps);
@@ -153,31 +173,32 @@ function IOSidebar(props: any) {
       setColormap("inferno");
       setColormapList(quantcmaps);
     }
-    GetStac(`/collections/${collection}/items/${val}`, {}).then((res: any) => {
-      setSelectedLayerURL(
-        res.data.assets[Object.keys(res.data.assets)[0]].href
-      );
-      setSelectedLayerAssetName(Object.keys(res.data.assets)[0]);
-    });
+
+    GetStac(`/collections/${selectedCollection}/items/${val}`, {}).then(
+      (res: any) => {
+        setSelectedLayerURL(
+          res.data.assets[Object.keys(res.data.assets)[0]].href
+        );
+        setSelectedLayerAssetName(Object.keys(res.data.assets)[0]);
+        navigate(`/apps/io-layers/${selectedCollection}/${val}`);
+      }
+    );
   };
 
   const handleYearChange = (e: any) => {
     setSelectedYear(e.value);
-    if (selectedVariable !== "") {
-      handleLayerChange("");
-    }
   };
   const handleMonthChange = (e: any) => {
     setSelectedMonth(e.value);
-    if (selectedVariable !== "") {
-      handleLayerChange("");
-    }
   };
 
   const handleVariableChange = (e: any) => {
     setSelectedVariable(e.value);
-    handleLayerChange("");
   };
+
+  useEffect(() => {
+    handleLayerChange("");
+  }, [selectedVariable, selectedMonth, selectedYear, selectedLayer]);
 
   useEffect(() => {
     GetStac("/collections", {}).then((res: any) => {
@@ -188,6 +209,13 @@ function IOSidebar(props: any) {
       setCollectionList(items);
     });
   }, []);
+
+  useEffect(() => {
+    let t: any = {};
+    t.value = collection;
+    t.layerSelected = item;
+    handleCollectionChange(t);
+  }, [collection, item]);
 
   return (
     <Grid sx={{ width: "300px", marginLeft: "15px" }}>
@@ -203,7 +231,7 @@ function IOSidebar(props: any) {
           <Selector
             selectorList={collectionList}
             selectorId="layer-collection"
-            value={collection}
+            value={selectedCollection}
             onValueChange={handleCollectionChange}
             t={t}
           />

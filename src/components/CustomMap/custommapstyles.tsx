@@ -5,6 +5,7 @@ export const CustomMapContainer = styled.div`
   position: fixed;
   width: 100%;
   height: 100%;
+  z-index: -10;
 `;
 export const MapWrapperContainer = styled.div`
   position: absolute;

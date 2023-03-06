@@ -8,6 +8,7 @@ import store from "./store";
 import i18n from "./i18n";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { TranslateWrapper } from "./context/Translation";
+import { BrowserRouter as Router } from "react-router-dom";
 
 const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);
@@ -21,12 +22,14 @@ const theme = createTheme({
 
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <TranslateWrapper i18n={i18n}>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
-      </TranslateWrapper>
-    </Provider>
+    <Router basename="/">
+      <Provider store={store}>
+        <TranslateWrapper i18n={i18n}>
+          <ThemeProvider theme={theme}>
+            <App />
+          </ThemeProvider>
+        </TranslateWrapper>
+      </Provider>
+    </Router>
   </React.StrictMode>
 );

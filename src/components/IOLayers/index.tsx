@@ -13,12 +13,14 @@ import { AppContainer, BottomNavBarContainer, GlobalStyle } from "src/styles";
 import { GetCOGStats } from "../helpers/api";
 import { cmap } from "../helpers/colormaps";
 import { createRangeLegendControl } from "../SimpleLegend";
+import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 
 export default function IOLayers(props: any) {
   const { textInCard, cardBGHref, onClick } = props;
   const quantcmaps = ["inferno", "spectral", "terrain", "coolwarm"];
   const qualcmaps = ["tab10", "tab20", "tab20b"];
-  const [selectedLayer, setSelectedLayer] = useState("");
+  const [collection, setCollection] = useState("chelsa-clim");
+  const [item, setItem] = useState("bio1");
   const [selectedLayerAssetName, setSelectedLayerAssetName] = useState("");
   const [selectedLayerURL, setSelectedLayerURL] = useState("");
   const [selectedLayerTiles, setSelectedLayerTiles] = useState("");
@@ -26,17 +28,12 @@ export default function IOLayers(props: any) {
   const [colormap, setColormap] = useState("inferno");
   const [colormapList, setColormapList] = useState(quantcmaps);
 
-  const IOHeaderProps = {
-    setSelectedLayer,
-  };
-
-  const IOSideBarProps = {
-    setSelectedLayer,
-  };
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const sidebarProps = {
-    selectedLayer,
-    setSelectedLayer,
+    item,
+    collection,
     setSelectedLayerURL,
     setSelectedLayerAssetName,
     setColormap,
@@ -47,7 +44,18 @@ export default function IOLayers(props: any) {
   };
 
   const leftContentProps = {
-    sidebarContent: <IOSidebar {...sidebarProps} />,
+    sidebarContent: (
+      <Routes>
+        <Route
+          path="/apps/io-layers/:collection/:item/"
+          element={<IOSidebar {...sidebarProps} />}
+        ></Route>
+        <Route
+          path="/apps/io-layers/"
+          element={<IOSidebar {...sidebarProps} />}
+        ></Route>
+      </Routes>
+    ),
   };
 
   useEffect(() => {
@@ -83,18 +91,26 @@ export default function IOLayers(props: any) {
     }
   }, [selectedLayerURL, colormap]);
 
+  useEffect(() => {
+    if (location.pathname === "/apps/io-layers/") {
+      navigate("/apps/io-layers/chelsa-clim/bio1");
+    }
+  }, [location]);
+
   const rightContentProps = {
     selectedLayerTiles,
     legend,
     setColormap,
+    setCollection,
+    setItem,
     colormap,
     colormapList,
   };
 
   return (
     <AppContainer id="appcontainer">
-      <RightContentGroup {...rightContentProps} />
       <LeftContentGroup {...leftContentProps} />
+      <RightContentGroup {...rightContentProps} />
       <GlobalStyle />
     </AppContainer>
   );
