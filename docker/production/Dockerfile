@@ -47,7 +47,7 @@ RUN mkdir  -p /var/www/app
 WORKDIR /var/www/app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-COPY .env.production .env
+#COPY .env.production .env
 #RUN npm install
 
 RUN chmod 777 /var/www/app/*
