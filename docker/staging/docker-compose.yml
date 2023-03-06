@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  io-docker-env-staging:
+    build:
+      context: ../../
+      dockerfile: docker/staging/Dockerfile
+    image: io-env-staging
+    restart: always
+    ports:
+      - "9097:80"

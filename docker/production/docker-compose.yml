@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  io-docker-env-production:
+    build:
+      context: ../../
+      dockerfile: docker/production/Dockerfile
+    image: io-env-production
+    restart: always
+    ports:
+      - "9096:80"

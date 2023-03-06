@@ -1,0 +1,16 @@
+name: io staging workflow #
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: deploying io in staging
+        uses: actions/checkout@v3
+      - run: make build-staging
+      - run: make start-staging
