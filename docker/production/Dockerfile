@@ -15,32 +15,7 @@ RUN \
 
 
 FROM node:16-alpine as build
-#FROM node:16-alpine as build
 
-#ARG ssh_prv_key
-#ARG ssh_pub_key
-#ARG ssh_config
-
-#RUN apt-get update && \
-#    apt-get install -y \
-#        git \
-#        openssh-server \
-#        openssh-client
-
-#COPY docker/configuration/config.txt /root/.ssh/config
-#COPY docker/configuration/id_rsa.bq-react-lib /root/.ssh/id_rsa.bq-react-lib
-#COPY docker/configuration/id_rsa.bq-react-lib.pub /root/.ssh/id_rsa.bq-react-lib.pub
-
-# Authorize SSH Host
-#RUN mkdir -p /root/.ssh && \
-#    chmod 0700 /root/.ssh && \
-#    ssh-keyscan github.com > /root/.ssh/known_hosts
-
-
-
-#RUN chmod 600 /root/.ssh/id_rsa.bq-react-lib && \
-#    chmod 700 /root/.ssh/config && \
-#    chmod 600 /root/.ssh/id_rsa.bq-react-lib.pub
 
 RUN mkdir  -p /var/www/app
 
@@ -56,12 +31,13 @@ RUN npm run build
 
 FROM nginx:1.12-alpine as prod
 
-RUN mkdir /usr/share/nginx/html/io
-
-COPY --from=build /var/www/app/build /usr/share/nginx/html/io
 
 
+COPY --from=build /var/www/app/build /usr/share/nginx/html/io-app
 
+
+RUN mkdir /usr/share/nginx/html/io-app/apps
+RUN cd /usr/share/nginx/html/io-app && ln -s ../ apps/io-layers 
 RUN chmod 777 /usr/share/nginx/html/*
 
 
