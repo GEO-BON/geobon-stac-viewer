@@ -72,6 +72,7 @@ export default function IOLayers(props: any) {
         const obj = {
           assets: selectedLayerAssetName,
           colormap_name: colormap,
+          bidx: "1",
           //expression
         };
         const rescale = `${data.percentile_2},${data.percentile_98}`;
@@ -92,7 +93,7 @@ export default function IOLayers(props: any) {
   }, [selectedLayerURL, colormap]);
 
   useEffect(() => {
-    if (location.pathname === "/apps/io-layers/") {
+    if (location.pathname === "/apps/io-layers") {
       navigate("/apps/io-layers/chelsa-clim/bio1");
     }
   }, [location]);
