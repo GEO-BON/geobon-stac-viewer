@@ -13,6 +13,7 @@ import {
 import _ from "underscore";
 import { GetStac } from "../helpers/api";
 import { useNavigate, useParams } from "react-router-dom";
+import { FormGroup, FormControlLabel, Switch } from "@mui/material";
 
 function IOSidebar(props: any) {
   const {
@@ -24,6 +25,7 @@ function IOSidebar(props: any) {
     qualcmaps,
     quantcmaps,
     colormap,
+    logIt,
   } = props;
   const [collectionList, setCollectionList] = useState([]);
   const [selectedCollection, setSelectedCollection] = useState("");
@@ -36,6 +38,7 @@ function IOSidebar(props: any) {
   const [showVariable, setShowVariable] = useState(false);
   const [selectedYear, setSelectedYear] = useState(1980);
   const [selectedMonth, setSelectedMonth] = useState(1);
+
   const navigate = useNavigate();
 
   interface Params {
@@ -285,6 +288,13 @@ function IOSidebar(props: any) {
             />
           </Item>
         )}
+        <FormGroup sx={{}}>
+          <FormControlLabel
+            sx={{ textShadow: "1px 1px 1px #000000" }}
+            control={<Switch onChange={logIt} color="secondary" />}
+            label="SQRT transform?"
+          />
+        </FormGroup>
       </Stack>
       <Box
         sx={{

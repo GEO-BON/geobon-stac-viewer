@@ -22,6 +22,7 @@ export default function IOLayers(props: any) {
   const [collection, setCollection] = useState("chelsa-clim");
   const [item, setItem] = useState("bio1");
   const [selectedLayerAssetName, setSelectedLayerAssetName] = useState("");
+  const [logTransform, setLogTransform] = useState(false);
   const [selectedLayerURL, setSelectedLayerURL] = useState("");
   const [selectedLayerTiles, setSelectedLayerTiles] = useState("");
   const [legend, setLegend] = useState({});
@@ -30,6 +31,11 @@ export default function IOLayers(props: any) {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const logIt = (event: any) => {
+    event.stopPropagation();
+    setLogTransform(event.target.checked);
+  };
 
   const sidebarProps = {
     item,
@@ -41,6 +47,7 @@ export default function IOLayers(props: any) {
     qualcmaps,
     quantcmaps,
     colormap,
+    logIt,
   };
 
   const leftContentProps = {
@@ -60,37 +67,39 @@ export default function IOLayers(props: any) {
 
   useEffect(() => {
     if (selectedLayerURL !== "" && typeof selectedLayerURL !== "undefined") {
-      GetCOGStats(selectedLayerURL).then((l: any) => {
+      GetCOGStats(selectedLayerURL, logTransform).then((l: any) => {
         const tiler = `https://tiler.biodiversite-quebec.ca/cog/tiles/{z}/{x}/{y}`;
         let data = [];
         if (Object.keys(l).includes("data")) {
-          data = l.data[1];
+          data = l.data[Object.keys(l.data)[0]];
         } else {
           data = l[selectedLayerAssetName][1];
         }
-
+        let expression = "B1";
+        if (logTransform) {
+          expression = "sqrt(B1)";
+        }
         const obj = {
           assets: selectedLayerAssetName,
           colormap_name: colormap,
           bidx: "1",
-          //expression
+          expression: expression,
         };
-        const rescale = `${data.percentile_2},${data.percentile_98}`;
+        let min = data.percentile_2;
+        let max = data.percentile_98;
+        if (min === max) {
+          min = data.min;
+          max = data.max;
+        }
+        const rescale = `${min},${max}`;
         const params = new URLSearchParams(obj).toString();
         setSelectedLayerTiles(
           `${tiler}?url=${selectedLayerURL}&rescale=${rescale}&${params}`
         );
-
-        setLegend(
-          createRangeLegendControl(
-            data.percentile_2,
-            data.percentile_98,
-            cmap(colormap)
-          )
-        );
+        setLegend(createRangeLegendControl(min, max, cmap(colormap)));
       });
     }
-  }, [selectedLayerURL, colormap]);
+  }, [selectedLayerURL, logTransform, colormap]);
 
   useEffect(() => {
     if (location.pathname === "/apps/io-layers") {

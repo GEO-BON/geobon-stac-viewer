@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import Control from "react-leaflet";
 import L from "leaflet";
 import ReactDOMServer from "react-dom/server";
+import { FormGroup, FormControlLabel, Switch } from "@mui/material";
 
 function LegendItem(props: any) {
   const { color = "red", text = "" } = props;

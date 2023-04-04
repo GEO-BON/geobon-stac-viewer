@@ -6,6 +6,7 @@ import {
   LegendItemText,
   LegendContainer,
 } from "./legendstyles";
+
 import "./Legend.css";
 
 function LegendItem(props: any) {
@@ -31,12 +32,17 @@ function Legend(props: any) {
     left = 0,
     right = 0,
     scale = "",
+    setLogTransform,
   } = props;
   const myId = useRef(1);
   const scaleRef = useRef(scale);
   const isAnimating = useRef(false);
 
   let customclass = "";
+
+  function logIt(event: any) {
+    setLogTransform(event.target.checked);
+  }
 
   if (!isAnimating.current) {
     if (myId.current !== id || scaleRef.current !== scale) {

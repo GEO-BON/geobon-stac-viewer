@@ -99,13 +99,21 @@ export const GetStac = async (endpoint: string, paramObj: any) => {
  * @param {*} paramObj
  * @returns
  */
-export const GetCOGStats = async (link: any) => {
+export const GetCOGStats = async (link: any, logTransform: boolean) => {
   let result;
-  const base_url =
-    `https://tiler.biodiversite-quebec.ca/cog/statistics?url=${link}` as string;
+  let expression = "B1*(B1>0)";
+  if (logTransform) {
+    expression = "sqrt(B1)";
+  }
+  const obj = {
+    expression: expression,
+    url: link,
+  };
+  const base_url = `https://tiler.biodiversite-quebec.ca/cog/statistics`;
   try {
-    result = await axios.get(`${base_url}`, {});
+    result = await axios({ method: "get", url: base_url, params: obj });
   } catch (error) {
+    console.log(error);
     result = { data: null };
   }
   return result;
