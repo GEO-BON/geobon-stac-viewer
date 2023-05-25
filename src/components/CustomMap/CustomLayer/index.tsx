@@ -9,8 +9,14 @@ import { ColorPicker } from "../../ColormapPicker";
  * @param props
  */
 function CustomLayer(props: any) {
-  const { selectedLayerTiles, legend, setColormap, colormap, colormapList } =
-    props;
+  const {
+    selectedLayerTiles,
+    legend,
+    setColormap,
+    colormap,
+    colormapList,
+    opacity,
+  } = props;
   const [tiles, setTiles] = useState(<></>);
   const [basemap, setBasemap] = useState("carto");
   const map = useMap();
@@ -40,6 +46,7 @@ function CustomLayer(props: any) {
       let layerId = Math.random();
       const layer = L.tileLayer(selectedLayerTiles, {
         attribution: "io",
+        opacity: opacity / 100,
       });
       const container = map;
       //layerRef.selected = layer;
@@ -52,7 +59,7 @@ function CustomLayer(props: any) {
     return () => {
       if (legend && Object.keys(legend).length !== 0) legend.remove();
     };
-  }, [selectedLayerTiles]);
+  }, [selectedLayerTiles, opacity]);
 
   useEffect(() => {
     const layer = L.tileLayer(basemaps[basemap], {

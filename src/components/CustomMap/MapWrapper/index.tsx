@@ -1,6 +1,7 @@
 /* eslint-disable dot-notation */
 import React, { useState, useEffect, useReducer, useMemo } from "react";
 import { MapContainer, ScaleControl, ZoomControl } from "react-leaflet";
+import MSMapSlider from "../MSMapSlider";
 import CustomLayer from "../CustomLayer";
 import { useSelector, useDispatch } from "react-redux";
 import { MapWrapperContainer } from "../custommapstyles";
@@ -16,6 +17,7 @@ function MapWrapper(props: any) {
   //const generalState = useSelector((state: any) => state.reducerState);
   //const drawerOpen = useSelector((state: any) => state.reducerState.drawerOpen);
   const [mapWidth, setMapWidth] = useState("100vw");
+  const [opacity, setOpacity] = useState("80");
   /**
    * props for Customlayer component
    */
@@ -34,9 +36,19 @@ function MapWrapper(props: any) {
         >
           <CustomLayer
             {...props}
+            opacity={opacity}
             style={{
               width: mapWidth,
             }}
+          />
+          <MSMapSlider
+            absolute={true}
+            location={"bottom-left"}
+            bottom={40}
+            left={10}
+            width={200}
+            notifyChange={(newValue: any) => setOpacity(newValue)}
+            value={opacity}
           />
           <ZoomControl position="topright" />
           <ScaleControl position="bottomright" />
