@@ -106,12 +106,41 @@ export const GetCOGStats = async (link: any, logTransform: boolean) => {
     expression = "sqrt(B1)";
   }
   const obj = {
-    expression: expression,
+    //expression: expression,
     url: link,
   };
   const base_url = `https://tiler.biodiversite-quebec.ca/cog/statistics`;
   try {
     result = await axios({ method: "get", url: base_url, params: obj });
+  } catch (error) {
+    console.log(error);
+    result = { data: null };
+  }
+  return result;
+};
+
+/**
+ * function used to make any custom request
+ * @param {*} endpoint
+ * @param {*} paramObj
+ * @returns
+ */
+export const GetCOGStatsGeojson = async (link: any, geojson: {}) => {
+  let result;
+  const obj = { url: link };
+  const base_url = `https://tiler.biodiversite-quebec.ca/cog/statistics`;
+  try {
+    result = await axios({
+      method: "post",
+      baseURL: base_url,
+      withCredentials: false,
+      data: geojson,
+      params: obj,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
   } catch (error) {
     console.log(error);
     result = { data: null };

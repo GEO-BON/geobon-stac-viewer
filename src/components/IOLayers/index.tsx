@@ -83,7 +83,7 @@ export default function IOLayers(props: any) {
           assets: selectedLayerAssetName,
           colormap_name: colormap,
           bidx: "1",
-          expression: expression,
+          //expression: expression,
         };
         let min = data.percentile_2;
         let max = data.percentile_98;
@@ -109,6 +109,7 @@ export default function IOLayers(props: any) {
 
   const rightContentProps = {
     selectedLayerTiles,
+    selectedLayerURL,
     legend,
     setColormap,
     setCollection,

@@ -1,12 +1,19 @@
 /* eslint-disable dot-notation */
-import React, { useState, useEffect, useReducer, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { MapContainer, ScaleControl, ZoomControl } from "react-leaflet";
+import Control from "react-leaflet-custom-control";
+import { Button } from "@mui/material";
+import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import MSMapSlider from "../MSMapSlider";
 import CustomLayer from "../CustomLayer";
 import { useSelector, useDispatch } from "react-redux";
 import { MapWrapperContainer } from "../custommapstyles";
 import L from "leaflet";
 import { useParams } from "react-router-dom";
+import Digitizer from "../../Digitizer";
+import type { FeatureCollection } from "geojson";
+import StatsModal from "../../StatsModal";
+import { GetCOGStatsGeojson } from "../../helpers/api";
 
 /**
  *
@@ -16,8 +23,27 @@ import { useParams } from "react-router-dom";
 function MapWrapper(props: any) {
   //const generalState = useSelector((state: any) => state.reducerState);
   //const drawerOpen = useSelector((state: any) => state.reducerState.drawerOpen);
+  const { selectedLayerURL } = props;
   const [mapWidth, setMapWidth] = useState("100vw");
   const [opacity, setOpacity] = useState("80");
+  const [openStatsModal, setOpenStatsModal] = useState(false);
+  const [geojson, setGeojson] = useState<FeatureCollection>({
+    type: "FeatureCollection",
+    features: [],
+  });
+  const [rasterStats, setRasterStats] = useState<FeatureCollection>({
+    type: "FeatureCollection",
+    features: [],
+  });
+
+  const generateStats = () => {
+    setOpenStatsModal(true);
+    if (geojson.features.length > 0) {
+      GetCOGStatsGeojson(selectedLayerURL, geojson).then((g: any) => {
+        setRasterStats(g.data);
+      });
+    }
+  };
   /**
    * props for Customlayer component
    */
@@ -52,7 +78,29 @@ function MapWrapper(props: any) {
           />
           <ZoomControl position="topright" />
           <ScaleControl position="bottomright" />
+          <Digitizer geojson={geojson} setGeojson={setGeojson} />
+          {geojson.features.length > 0 && (
+            <Control position="topright">
+              <Button
+                sx={{
+                  background: "white",
+                  padding: "3px 0px 3px 0px",
+                  width: "auto",
+                  minWidth: "35px",
+                  border: "2px solid #00000077",
+                }}
+                onClick={generateStats}
+              >
+                <QueryStatsIcon />
+              </Button>
+            </Control>
+          )}
         </MapContainer>
+        <StatsModal
+          rasterStats={rasterStats}
+          setOpenStatsModal={setOpenStatsModal}
+          openStatsModal={openStatsModal}
+        />
       </MapWrapperContainer>
     </>
   );

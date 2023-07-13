@@ -127,20 +127,22 @@ function IOSidebar(props: any) {
         (res: any) => {
           let items: any = "";
 
-          items = res.data.features.map((c: any) => {
-            let option = c.properties.description;
-            if (c.collection === "esacci-lc") {
-              option = c.properties.year;
-            } else if (c.collection === "chelsa-clim-proj") {
-              option = `${c.properties.variable}-${c.properties.rcp}-${c.properties.model}`;
-            } else if (c.collection === "soilgrids") {
-              option = `${c.properties.variable}-${c.properties.depth}`;
-            }
-            return {
-              option: option,
-              value: c.id,
-            };
-          });
+          if (res.data) {
+            items = res.data.features.map((c: any) => {
+              let option = c.properties.description;
+              if (c.collection === "esacci-lc") {
+                option = c.properties.year;
+              } else if (c.collection === "chelsa-clim-proj") {
+                option = `${c.properties.variable}-${c.properties.rcp}-${c.properties.model}`;
+              } else if (c.collection === "soilgrids") {
+                option = `${c.properties.variable}-${c.properties.depth}`;
+              }
+              return {
+                option: option,
+                value: c.id,
+              };
+            });
+          }
           setLayerList(items);
           if (e.layerSelected !== undefined && e.layerSelected !== "") {
             //Route set the item
@@ -179,11 +181,13 @@ function IOSidebar(props: any) {
 
     GetStac(`/collections/${selectedCollection}/items/${val}`, {}).then(
       (res: any) => {
-        setSelectedLayerURL(
-          res.data.assets[Object.keys(res.data.assets)[0]].href
-        );
-        setSelectedLayerAssetName(Object.keys(res.data.assets)[0]);
-        navigate(`/apps/io-layers/${selectedCollection}/${val}`);
+        if (res.data) {
+          setSelectedLayerURL(
+            res.data.assets[Object.keys(res.data.assets)[0]].href
+          );
+          setSelectedLayerAssetName(Object.keys(res.data.assets)[0]);
+          navigate(`/apps/io-layers/${selectedCollection}/${val}`);
+        }
       }
     );
   };
