@@ -34,9 +34,16 @@ export default function Digitizer({ geojson, setGeojson }: Props) {
 
   const handleChange = () => {
     const geo = ref.current?.toGeoJSON();
-    if (geo?.type === "FeatureCollection") {
+    if (geo?.type === "FeatureCollection" && geo.features.length > 0) {
       setGeojson(geo);
     }
+  };
+
+  const handleDelete = () => {
+    setGeojson({
+      type: "FeatureCollection",
+      features: [],
+    });
   };
 
   return (
@@ -45,7 +52,7 @@ export default function Digitizer({ geojson, setGeojson }: Props) {
         position="topright"
         onEdited={handleChange}
         onCreated={handleChange}
-        onDeleted={handleChange}
+        /*onDeleted={handleDelete}*/
         draw={{
           rectangle: true,
           circle: false,
