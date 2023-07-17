@@ -75,15 +75,15 @@ export default function IOLayers(props: any) {
         } else {
           data = l[selectedLayerAssetName][1];
         }
-        let expression = "B1";
+        let expression = "b1";
         if (logTransform) {
-          expression = "sqrt(B1)";
+          expression = "sqrt(b1)";
         }
         const obj = {
           assets: selectedLayerAssetName,
           colormap_name: colormap,
           bidx: "1",
-          //expression: expression,
+          expression: expression,
         };
         let min = data.percentile_2;
         let max = data.percentile_98;

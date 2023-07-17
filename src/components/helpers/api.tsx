@@ -101,12 +101,12 @@ export const GetStac = async (endpoint: string, paramObj: any) => {
  */
 export const GetCOGStats = async (link: any, logTransform: boolean) => {
   let result;
-  let expression = "B1*(B1>0)";
+  let expression = "b1*(b1>0)";
   if (logTransform) {
-    expression = "sqrt(B1)";
+    expression = "sqrt(b1)";
   }
   const obj = {
-    //expression: expression,
+    expression: expression,
     url: link,
   };
   const base_url = `https://tiler.biodiversite-quebec.ca/cog/statistics`;

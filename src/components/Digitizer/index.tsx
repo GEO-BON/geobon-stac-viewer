@@ -7,9 +7,14 @@ import type { FeatureCollection } from "geojson";
 interface Props {
   geojson: FeatureCollection;
   setGeojson: (geojson: FeatureCollection) => void;
+  setShowStatsButton: (showStatsButton: boolean) => void;
 }
 
-export default function Digitizer({ geojson, setGeojson }: Props) {
+export default function Digitizer({
+  geojson,
+  setGeojson,
+  setShowStatsButton,
+}: Props) {
   const ref = useRef<L.FeatureGroup>(null);
 
   useEffect(() => {
@@ -33,6 +38,7 @@ export default function Digitizer({ geojson, setGeojson }: Props) {
   }, [geojson]);
 
   const handleChange = () => {
+    setShowStatsButton(true);
     const geo = ref.current?.toGeoJSON();
     if (geo?.type === "FeatureCollection" && geo.features.length > 0) {
       setGeojson(geo);
@@ -40,10 +46,11 @@ export default function Digitizer({ geojson, setGeojson }: Props) {
   };
 
   const handleDelete = () => {
-    setGeojson({
-      type: "FeatureCollection",
-      features: [],
-    });
+    setShowStatsButton(false);
+    const geo = ref.current?.toGeoJSON();
+    if (geo?.type === "FeatureCollection" && geo.features.length > 0) {
+      setGeojson(geo);
+    }
   };
 
   return (
@@ -52,7 +59,7 @@ export default function Digitizer({ geojson, setGeojson }: Props) {
         position="topright"
         onEdited={handleChange}
         onCreated={handleChange}
-        /*onDeleted={handleDelete}*/
+        onDeleted={handleDelete}
         draw={{
           rectangle: true,
           circle: false,

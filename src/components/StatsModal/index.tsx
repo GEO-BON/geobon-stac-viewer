@@ -37,28 +37,30 @@ export default function StatsModal(props: any) {
         <Typography id="modal-modal-title" variant="h6" component="h2">
           Statistics for selected area
         </Typography>
-        {rasterStats.features && rasterStats.features.length > 0 && (
-          <List>
-            <ListItem>
-              <strong>Mean</strong>:{" "}
-              {Math.trunc(
-                rasterStats.features[0].properties.statistics.b1.mean * 100
-              ) / 100}
-            </ListItem>
-            <ListItem>
-              <strong>Min</strong>:{" "}
-              {Math.trunc(
-                rasterStats.features[0].properties.statistics.b1.min * 100
-              ) / 100}
-            </ListItem>
-            <ListItem>
-              <strong>Max</strong>:{" "}
-              {Math.trunc(
-                rasterStats.features[0].properties.statistics.b1.max * 100
-              ) / 100}
-            </ListItem>
-          </List>
-        )}
+        {rasterStats &&
+          rasterStats.features &&
+          rasterStats.features.length > 0 && (
+            <List>
+              <ListItem>
+                <strong>Mean</strong>:{" "}
+                {Math.trunc(
+                  rasterStats.features[0].properties.statistics.b1.mean * 100
+                ) / 100}
+              </ListItem>
+              <ListItem>
+                <strong>Min</strong>:{" "}
+                {Math.trunc(
+                  rasterStats.features[0].properties.statistics.b1.min * 100
+                ) / 100}
+              </ListItem>
+              <ListItem>
+                <strong>Max</strong>:{" "}
+                {Math.trunc(
+                  rasterStats.features[0].properties.statistics.b1.max * 100
+                ) / 100}
+              </ListItem>
+            </List>
+          )}
       </Box>
     </Modal>
   );
