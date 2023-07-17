@@ -1,0 +1,8 @@
+.plotDiv {
+  margin-top: 30px;
+}
+
+.plotDiv svg {
+  margin: auto;
+  font-size: 0.7em;
+}
