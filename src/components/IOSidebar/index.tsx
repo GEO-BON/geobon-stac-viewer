@@ -170,8 +170,7 @@ function IOSidebar(props: any) {
         val = selectedLayer;
       }
     }
-
-    if (val.indexOf("-lc") !== -1) {
+    if (val.indexOf("-lc") !== -1 || val.indexOf("cobertura") !== -1) {
       setColormap("tab10");
       setColormapList(qualcmaps);
     } else if (qualcmaps.includes(colormap)) {
