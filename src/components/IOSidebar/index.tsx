@@ -27,10 +27,12 @@ function IOSidebar(props: any) {
     colormap,
     logIt,
   } = props;
-  const [collectionList, setCollectionList] = useState([]);
+  const [collectionList, setCollectionList] = useState([
+    { option: "", value: "" },
+  ]);
   const [selectedCollection, setSelectedCollection] = useState("");
   const [selectedLayer, setSelectedLayer] = useState("");
-  const [layerList, setLayerList] = useState([]);
+  const [layerList, setLayerList] = useState([{ option: "", value: "" }]);
   const [showLayers, setShowLayers] = useState(true);
   const [showMonths, setShowMonths] = useState(false);
   const [selectedVariable, setSelectedVariable] = useState("tas");
@@ -47,18 +49,34 @@ function IOSidebar(props: any) {
   }
   const { collection, item } = useParams<keyof Params>() as Params;
 
+  interface yearList {
+    option: string;
+    value: string;
+  }
+
   const yearList = Array.from({ length: 40 }, (_, i) => i + 1980).map(
     (v: any) => ({
       option: v,
       value: v,
     })
   );
+
+  interface monthList {
+    option: string;
+    value: string;
+  }
+
   const monthList = Array.from({ length: 12 }, (_, i) => i + 1).map(
     (v: any) => ({
       option: v,
       value: v,
     })
   );
+
+  interface chelsaVariableList {
+    option: string;
+    value: string;
+  }
 
   const chelsaVariableList = [
     {
