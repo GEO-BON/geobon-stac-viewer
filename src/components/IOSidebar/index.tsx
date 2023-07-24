@@ -11,7 +11,7 @@ import {
   MainSubTitle,
 } from "src/components/Sidebar/SidebarForms/sidebarformstyles";
 import _ from "underscore";
-import { GetStac } from "../helpers/api";
+import { GetStac, GetStacSearch, GetCOGBounds } from "../helpers/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { FormGroup, FormControlLabel, Switch } from "@mui/material";
 
@@ -32,14 +32,32 @@ function IOSidebar(props: any) {
   ]);
   const [selectedCollection, setSelectedCollection] = useState("");
   const [selectedLayer, setSelectedLayer] = useState("");
-  const [layerList, setLayerList] = useState([{ option: "", value: "" }]);
-  const [showLayers, setShowLayers] = useState(true);
-  const [showMonths, setShowMonths] = useState(false);
-  const [selectedVariable, setSelectedVariable] = useState("tas");
-  const [showYears, setShowYears] = useState(false);
-  const [showVariable, setShowVariable] = useState(false);
-  const [selectedYear, setSelectedYear] = useState(1980);
-  const [selectedMonth, setSelectedMonth] = useState(1);
+  const [level1List, setLevel1List] = useState([{ option: "", value: "" }]);
+  const [selectedLevel1, setSelectedLevel1] = useState("1");
+  const [level1Title, setLevel1Title] = useState("");
+  const [showLevel1, setShowLevel1] = useState(false);
+  const [level2List, setLevel2List] = useState([{ option: "", value: "" }]);
+  const [selectedLevel2, setSelectedLevel2] = useState("1");
+  const [level2Title, setLevel2Title] = useState("");
+  const [showLevel2, setShowLevel2] = useState(false);
+  const [level3List, setLevel3List] = useState([{ option: "", value: "" }]);
+  const [selectedLevel3, setSelectedLevel3] = useState("1");
+  const [level3Title, setLevel3Title] = useState("");
+  const [showLevel3, setShowLevel3] = useState(false);
+  const [bounds, setBounds] = useState([-80, 40, -60, 65]);
+
+  interface defaultYearList {
+    option: string;
+    value: string;
+  }
+
+  const defaultYearList = Array.from({ length: 40 }, (_, i) => i + 1980).map(
+    (v: any) => ({
+      option: v,
+      value: v,
+    })
+  );
+  const [yearList, setYearList] = useState(defaultYearList);
 
   const navigate = useNavigate();
 
@@ -48,18 +66,6 @@ function IOSidebar(props: any) {
     item: string;
   }
   const { collection, item } = useParams<keyof Params>() as Params;
-
-  interface yearList {
-    option: string;
-    value: string;
-  }
-
-  const yearList = Array.from({ length: 40 }, (_, i) => i + 1980).map(
-    (v: any) => ({
-      option: v,
-      value: v,
-    })
-  );
 
   interface monthList {
     option: string;
@@ -121,26 +127,66 @@ function IOSidebar(props: any) {
     },
   ];
 
+  const mammalsScenariosList = [
+    { option: "SSP2-RCP4.5", value: "1" },
+    { option: "SSP3-RCP6.0", value: "2" },
+    { option: "SSP4-RCP6.0", value: "3" },
+    { option: "SSP5-RCP8.5", value: "4" },
+  ];
+
+  const mammalsYearsList = [
+    { option: "2015", value: "2015" },
+    { option: "2020", value: "2020" },
+    { option: "2025", value: "2025" },
+    { option: "2030", value: "2030" },
+    { option: "2035", value: "2035" },
+    { option: "2040", value: "2040" },
+    { option: "2045", value: "2045" },
+    { option: "2050", value: "2050" },
+    { option: "2055", value: "2055" },
+  ];
+
   const handleCollectionChange = (e: any) => {
     setSelectedCollection(e.value);
     if (e.value === "chelsa-monthly") {
-      setShowYears(true);
-      setShowMonths(true);
-      setShowVariable(true);
-      setShowLayers(false);
-      setLayerList([]);
+      setLevel1List(defaultYearList);
+      setShowLevel1(true);
+      setShowLevel2(true);
+      setShowLevel3(true);
       //Route set the item
       if (e.layerSelected !== "") {
         const str = e.layerSelected.split("_");
-        setSelectedVariable(str[0]);
-        setSelectedYear(str[2]);
-        setSelectedMonth(parseInt(str[1]));
+        setSelectedLevel1(str[0]);
+        setSelectedLevel2(str[2]);
+        setSelectedLevel3(str[1]);
       }
+    } else if (e.value === "global-mammals") {
+      setLevel2List(mammalsScenariosList);
+      setLevel3List(mammalsYearsList);
+      setShowLevel1(true);
+      setLevel1Title("Species");
+      setShowLevel2(true);
+      setLevel2Title("Scenario");
+      setShowLevel3(true);
+      setLevel3Title("Year");
+      GetStacSearch({
+        query: {
+          scenario: { eq: "SSP5-RCP8.5" },
+        },
+        datetime: "2015-01-01T00:00:00Z",
+        limit: 500,
+      }).then((res: any) => {
+        let items: any = res.data.features.map((c: any) => ({
+          option: c.properties.species.replace("_", " "),
+          value: c.properties.species,
+        }));
+        setLevel1List(items);
+      });
     } else {
-      setShowMonths(false);
-      setShowYears(false);
-      setShowVariable(false);
-      setShowLayers(true);
+      setShowLevel2(false);
+      setShowLevel3(false);
+      setShowLevel1(true);
+      setLevel1Title("Variable");
       GetStac(`/collections/${e.value}/items`, { limit: 200 }).then(
         (res: any) => {
           let items: any = "";
@@ -161,7 +207,7 @@ function IOSidebar(props: any) {
               };
             });
           }
-          setLayerList(items);
+          setLevel1List(items);
           if (e.layerSelected !== undefined && e.layerSelected !== "") {
             //Route set the item
             setSelectedLayer(e.layerSelected);
@@ -171,22 +217,20 @@ function IOSidebar(props: any) {
     }
   };
 
-  const handleLayerChange = (e: any = "") => {
+  const handleLayerChange = () => {
     let val = "";
-    if (e !== "") {
-      val = e.value;
-    } else {
-      if (selectedCollection === "chelsa-monthly") {
-        let month = "";
-        if (selectedMonth < 10) {
-          month = `0${selectedMonth}`;
-        } else {
-          month = selectedMonth.toString();
-        }
-        val = `${selectedVariable}_${month}_${selectedYear}`;
+    if (selectedCollection === "chelsa-monthly") {
+      let month = "";
+      if (parseInt(selectedLevel3) < 10) {
+        month = `0${parseInt(selectedLevel3)}`;
       } else {
-        val = selectedLayer;
+        month = selectedLevel3;
       }
+      val = `${selectedLevel1}_${month}_${selectedLevel2}`;
+    } else if (selectedCollection === "global-mammals") {
+      val = `${selectedLevel1}_${selectedLevel2}_${selectedLevel3}`;
+    } else {
+      val = selectedLevel1;
     }
     if (val.indexOf("-lc") !== -1 || val.indexOf("cobertura") !== -1) {
       setColormap("tab10");
@@ -209,20 +253,20 @@ function IOSidebar(props: any) {
     );
   };
 
-  const handleYearChange = (e: any) => {
-    setSelectedYear(e.value);
+  const handleLevel1Change = (e: any) => {
+    setSelectedLevel1(e.value);
   };
-  const handleMonthChange = (e: any) => {
-    setSelectedMonth(e.value);
+  const handleLevel2Change = (e: any) => {
+    setSelectedLevel2(e.value);
   };
 
-  const handleVariableChange = (e: any) => {
-    setSelectedVariable(e.value);
+  const handleLevel3Change = (e: any) => {
+    setSelectedLevel3(e.value);
   };
 
   useEffect(() => {
-    handleLayerChange("");
-  }, [selectedVariable, selectedMonth, selectedYear, selectedLayer]);
+    handleLayerChange();
+  }, [selectedLevel1, selectedLevel2, selectedLevel3]);
 
   useEffect(() => {
     GetStac("/collections", {}).then((res: any) => {
@@ -235,10 +279,20 @@ function IOSidebar(props: any) {
   }, []);
 
   useEffect(() => {
-    let t: any = {};
-    t.value = collection;
-    t.layerSelected = item;
-    handleCollectionChange(t);
+    setSelectedCollection(collection);
+    if (collection === "global-mammals") {
+      const tt: any = item.split("_");
+      setSelectedLevel1(`${tt[0]}_${tt[1]}`);
+      setShowLevel1(true);
+      setShowLevel2(true);
+      setShowLevel3(true);
+      setSelectedLevel2(tt[2]);
+      setSelectedLevel3(tt[3]);
+    } else {
+      setSelectedLevel1(item);
+    }
+    setSelectedLayer(item);
+    handleCollectionChange({ value: collection });
   }, [collection, item]);
 
   return (
@@ -261,50 +315,38 @@ function IOSidebar(props: any) {
           />
         </Item>
 
-        {showYears && (
+        {showLevel1 && (
           <Item>
-            <SelectorTitle>{`Year`}</SelectorTitle>
+            <SelectorTitle>{level1Title}</SelectorTitle>
             <Selector
-              selectorList={yearList}
-              value={selectedYear.toString()}
-              selectorId="year"
-              onValueChange={handleYearChange}
+              selectorList={level1List}
+              value={selectedLevel1}
+              selectorId="level1"
+              onValueChange={handleLevel1Change}
               t={t}
             />
           </Item>
         )}
-        {showMonths && (
+        {showLevel2 && (
           <Item>
-            <SelectorTitle>{`Month`}</SelectorTitle>
+            <SelectorTitle>{level2Title}</SelectorTitle>
             <Selector
-              selectorList={monthList}
-              value={selectedMonth.toString()}
-              selectorId="month"
-              onValueChange={handleMonthChange}
+              selectorList={level2List}
+              value={selectedLevel2}
+              selectorId="level2"
+              onValueChange={handleLevel2Change}
               t={t}
             />
           </Item>
         )}
-        {showVariable && (
+        {showLevel3 && (
           <Item>
-            <SelectorTitle>{`Variable`}</SelectorTitle>
+            <SelectorTitle>{level3Title}</SelectorTitle>
             <Selector
-              selectorList={chelsaVariableList}
-              value={selectedVariable}
-              selectorId="variable"
-              onValueChange={handleVariableChange}
-              t={t}
-            />
-          </Item>
-        )}
-        {showLayers && (
-          <Item>
-            <SelectorTitle>{`Layer`}</SelectorTitle>
-            <Selector
-              selectorList={layerList}
-              value={selectedLayer}
-              selectorId="layer"
-              onValueChange={handleLayerChange}
+              selectorList={level3List}
+              value={selectedLevel3}
+              selectorId="level3"
+              onValueChange={handleLevel3Change}
               t={t}
             />
           </Item>

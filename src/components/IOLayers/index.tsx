@@ -102,7 +102,10 @@ export default function IOLayers(props: any) {
   }, [selectedLayerURL, logTransform, colormap]);
 
   useEffect(() => {
-    if (location.pathname === "/apps/io-layers") {
+    if (
+      location.pathname === "/apps/io-layers" ||
+      location.pathname === "/apps/io-layers/"
+    ) {
       navigate("/apps/io-layers/chelsa-clim/bio1");
     }
   }, [location]);

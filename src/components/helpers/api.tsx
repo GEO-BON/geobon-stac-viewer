@@ -84,8 +84,31 @@ export const GetStac = async (endpoint: string, paramObj: any) => {
   let result;
   const base_url = "https://io.biodiversite-quebec.ca/stac" as string;
   try {
-    result = await axios.get(`${base_url}${endpoint}`, {
-      params: { ...paramObj },
+    result = await axios({
+      method: "get",
+      baseURL: `${base_url}${endpoint}`,
+      data: { limit: 100 },
+    });
+  } catch (error) {
+    result = { data: null };
+  }
+  return result;
+};
+
+/**
+ * function used to make any custom request
+ * @param {*} endpoint
+ * @param {*} paramObj
+ * @returns
+ */
+export const GetStacSearch = async (searchObj: any) => {
+  let result;
+  const base_url = "https://io.biodiversite-quebec.ca/stac/search" as string;
+  try {
+    result = await axios({
+      method: "post",
+      baseURL: `${base_url}`,
+      data: searchObj,
     });
   } catch (error) {
     result = { data: null };
@@ -141,6 +164,27 @@ export const GetCOGStatsGeojson = async (link: any, geojson: {}) => {
         "Access-Control-Allow-Origin": "*",
       },
     });
+  } catch (error) {
+    console.log(error);
+    result = { data: null };
+  }
+  return result;
+};
+
+/**
+ * function used to make any custom request
+ * @param {*} endpoint
+ * @param {*} paramObj
+ * @returns
+ */
+export const GetCOGBounds = async (link: any) => {
+  let result;
+  const obj = {
+    url: link,
+  };
+  const base_url = `https://tiler.biodiversite-quebec.ca/cog/bounds`;
+  try {
+    result = await axios({ method: "get", url: base_url, params: obj });
   } catch (error) {
     console.log(error);
     result = { data: null };
