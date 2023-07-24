@@ -146,21 +146,25 @@ function IOSidebar(props: any) {
     { option: "2055", value: "2055" },
   ];
 
-  const handleCollectionChange = (e: any) => {
+  const handleCollectionChange = async (e: any) => {
     setSelectedCollection(e.value);
     if (e.value === "chelsa-monthly") {
-      setLevel1List(defaultYearList);
       setShowLevel1(true);
       setShowLevel2(true);
       setShowLevel3(true);
       //Route set the item
-      if (e.layerSelected !== "") {
-        const str = e.layerSelected.split("_");
-        setSelectedLevel1(str[0]);
-        setSelectedLevel2(str[2]);
-        setSelectedLevel3(str[1]);
+      if (selectedLayer !== "") {
+        setLevel1List(chelsaVariableList);
+        setLevel2List(defaultYearList);
+        setLevel3List(monthList);
+        setLevel1Title("Variable");
+        setLevel2Title("Year");
+        setLevel3Title("Month");
       }
     } else if (e.value === "global-mammals") {
+      setShowLevel1(true);
+      setShowLevel2(true);
+      setShowLevel3(true);
       setLevel2List(mammalsScenariosList);
       setLevel3List(mammalsYearsList);
       setShowLevel1(true);
@@ -208,10 +212,10 @@ function IOSidebar(props: any) {
             });
           }
           setLevel1List(items);
-          if (e.layerSelected !== undefined && e.layerSelected !== "") {
+          /*if (e.layerSelected !== undefined && e.layerSelected !== "") {
             //Route set the item
             setSelectedLayer(e.layerSelected);
-          }
+          }*/
         }
       );
     }
@@ -279,20 +283,20 @@ function IOSidebar(props: any) {
   }, []);
 
   useEffect(() => {
-    setSelectedCollection(collection);
-    if (collection === "global-mammals") {
-      const tt: any = item.split("_");
-      setSelectedLevel1(`${tt[0]}_${tt[1]}`);
-      setShowLevel1(true);
-      setShowLevel2(true);
-      setShowLevel3(true);
-      setSelectedLevel2(tt[2]);
-      setSelectedLevel3(tt[3]);
-    } else {
-      setSelectedLevel1(item);
-    }
-    setSelectedLayer(item);
-    handleCollectionChange({ value: collection });
+    handleCollectionChange({ value: collection }).then(() => {
+      if (collection === "global-mammals") {
+        const tt: any = item.split("_");
+        setSelectedLevel1(`${tt[0]}_${tt[1]}`);
+        setSelectedLevel2(tt[2]);
+        setSelectedLevel3(tt[3]);
+      } else {
+        const tt: any = item.split("_");
+        setSelectedLevel1(tt[1]);
+        setSelectedLevel2(tt[2]);
+        setSelectedLevel3(tt[3]);
+      }
+      setSelectedLayer(item);
+    });
   }, [collection, item]);
 
   return (
