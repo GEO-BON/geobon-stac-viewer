@@ -16,6 +16,7 @@ function CustomLayer(props: any) {
     colormap,
     colormapList,
     opacity,
+    bounds,
   } = props;
   const [tiles, setTiles] = useState(<></>);
   const [basemap, setBasemap] = useState("carto");
@@ -43,7 +44,6 @@ function CustomLayer(props: any) {
           map.removeLayer(layer);
         }
       });
-      let layerId = Math.random();
       const layer = L.tileLayer(selectedLayerTiles, {
         attribution: "io",
         opacity: opacity / 100,
@@ -68,6 +68,10 @@ function CustomLayer(props: any) {
     const container = map;
     container.addLayer(layer);
   }, []);
+
+  /*useEffect(() => {
+    map.fitBounds(bounds);
+  }, [bounds]);*/
 
   return (
     <ColorPicker

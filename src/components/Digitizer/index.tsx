@@ -7,9 +7,14 @@ import type { FeatureCollection } from "geojson";
 interface Props {
   geojson: FeatureCollection;
   setGeojson: (geojson: FeatureCollection) => void;
+  setShowStatsButton: (showStatsButton: boolean) => void;
 }
 
-export default function Digitizer({ geojson, setGeojson }: Props) {
+export default function Digitizer({
+  geojson,
+  setGeojson,
+  setShowStatsButton,
+}: Props) {
   const ref = useRef<L.FeatureGroup>(null);
 
   useEffect(() => {

@@ -27,17 +27,23 @@ function MapWrapper(props: any) {
   const [mapWidth, setMapWidth] = useState("100vw");
   const [opacity, setOpacity] = useState("80");
   const [openStatsModal, setOpenStatsModal] = useState(false);
+<<<<<<< HEAD
   const [showRasterStatsControl, setShowRasterStatsControl] = useState(false);
+=======
+  const [showStatsButton, setShowStatsButton] = useState(false);
+  const emptyFC: FeatureCollection = {
+    type: "FeatureCollection",
+    features: [],
+  };
+>>>>>>> tmp_working
   const [geojson, setGeojson] = useState<FeatureCollection>({
     type: "FeatureCollection",
     features: [],
   });
-  const [rasterStats, setRasterStats] = useState<FeatureCollection>({
-    type: "FeatureCollection",
-    features: [],
-  });
+  const [rasterStats, setRasterStats] = useState<FeatureCollection>(emptyFC);
 
   const generateStats = () => {
+    setRasterStats(emptyFC);
     setOpenStatsModal(true);
     if (geojson.features.length > 0) {
       GetCOGStatsGeojson(selectedLayerURL, geojson).then((g: any) => {
@@ -62,8 +68,8 @@ function MapWrapper(props: any) {
     <>
       <MapWrapperContainer>
         <MapContainer
-          zoom={5}
-          center={[55, -69]}
+          zoom={3}
+          center={[20, 0]}
           zoomControl={false}
           style={{
             width: mapWidth,
