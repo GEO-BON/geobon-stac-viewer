@@ -27,6 +27,7 @@ function MapWrapper(props: any) {
   const [mapWidth, setMapWidth] = useState("100vw");
   const [opacity, setOpacity] = useState("80");
   const [openStatsModal, setOpenStatsModal] = useState(false);
+  const [showRasterStatsControl, setShowRasterStatsControl] = useState(false);
   const [geojson, setGeojson] = useState<FeatureCollection>({
     type: "FeatureCollection",
     features: [],
@@ -44,6 +45,15 @@ function MapWrapper(props: any) {
       });
     }
   };
+
+  useEffect(() => {
+    if (geojson.features.length > 0) {
+      setShowRasterStatsControl(true);
+    } else {
+      setShowRasterStatsControl(false);
+    }
+  }, [geojson]);
+
   /**
    * props for Customlayer component
    */
@@ -79,7 +89,7 @@ function MapWrapper(props: any) {
           <ZoomControl position="topright" />
           <ScaleControl position="bottomright" />
           <Digitizer geojson={geojson} setGeojson={setGeojson} />
-          {geojson.features.length > 0 && (
+          {showRasterStatsControl && (
             <Control position="topright">
               <Button
                 sx={{

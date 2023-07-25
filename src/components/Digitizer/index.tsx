@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as L from "leaflet";
 import { FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
@@ -32,27 +32,34 @@ export default function Digitizer({ geojson, setGeojson }: Props) {
     }
   }, [geojson]);
 
-  const handleChange = () => {
+  const onCreate = () => {
     const geo = ref.current?.toGeoJSON();
-    if (geo?.type === "FeatureCollection" && geo.features.length > 0) {
+    if (geo?.type === "FeatureCollection") {
       setGeojson(geo);
     }
   };
 
-  const handleDelete = () => {
-    setGeojson({
+  const onEditStop = () => {
+    const geo: any = ref.current?.toGeoJSON();
+    setGeojson(geo);
+  };
+
+  const onDeleteStop = () => {
+    const geo: any = ref.current?.toGeoJSON();
+    const g: FeatureCollection = {
       type: "FeatureCollection",
       features: [],
-    });
+    };
+    setGeojson(geo);
   };
 
   return (
     <FeatureGroup ref={ref}>
       <EditControl
         position="topright"
-        onEdited={handleChange}
-        onCreated={handleChange}
-        /*onDeleted={handleDelete}*/
+        onEditStop={onEditStop}
+        onCreated={onCreate}
+        /*onDeleteStop={onDeleteStop}*/
         draw={{
           rectangle: true,
           circle: false,
