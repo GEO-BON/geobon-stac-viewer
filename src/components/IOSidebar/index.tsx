@@ -153,14 +153,12 @@ function IOSidebar(props: any) {
       setShowLevel2(true);
       setShowLevel3(true);
       //Route set the item
-      if (selectedLayer !== "") {
-        setLevel1List(chelsaVariableList);
-        setLevel2List(defaultYearList);
-        setLevel3List(monthList);
-        setLevel1Title("Variable");
-        setLevel2Title("Year");
-        setLevel3Title("Month");
-      }
+      setLevel1List(chelsaVariableList);
+      setLevel2List(defaultYearList);
+      setLevel3List(monthList);
+      setLevel1Title("Variable");
+      setLevel2Title("Year");
+      setLevel3Title("Month");
     } else if (e.value === "global-mammals") {
       setShowLevel1(true);
       setShowLevel2(true);
@@ -222,39 +220,41 @@ function IOSidebar(props: any) {
   };
 
   const handleLayerChange = () => {
-    let val = "";
-    if (selectedCollection === "chelsa-monthly") {
-      let month = "";
-      if (parseInt(selectedLevel3) < 10) {
-        month = `0${parseInt(selectedLevel3)}`;
-      } else {
-        month = selectedLevel3;
-      }
-      val = `${selectedLevel1}_${month}_${selectedLevel2}`;
-    } else if (selectedCollection === "global-mammals") {
-      val = `${selectedLevel1}_${selectedLevel2}_${selectedLevel3}`;
-    } else {
-      val = selectedLevel1;
-    }
-    if (val.indexOf("-lc") !== -1 || val.indexOf("cobertura") !== -1) {
-      setColormap("tab10");
-      setColormapList(qualcmaps);
-    } else if (qualcmaps.includes(colormap)) {
-      setColormap("inferno");
-      setColormapList(quantcmaps);
-    }
-
-    GetStac(`/collections/${selectedCollection}/items/${val}`, {}).then(
-      (res: any) => {
-        if (res.data) {
-          setSelectedLayerURL(
-            res.data.assets[Object.keys(res.data.assets)[0]].href
-          );
-          setSelectedLayerAssetName(Object.keys(res.data.assets)[0]);
-          navigate(`/apps/io-layers/${selectedCollection}/${val}`);
+    if (selectedLevel1) {
+      let val = "";
+      if (selectedCollection === "chelsa-monthly") {
+        let month = "";
+        if (parseInt(selectedLevel3) < 10) {
+          month = `0${parseInt(selectedLevel3)}`;
+        } else {
+          month = selectedLevel3;
         }
+        val = `${selectedLevel1}_${month}_${selectedLevel2}`;
+      } else if (selectedCollection === "global-mammals") {
+        val = `${selectedLevel1}_${selectedLevel2}_${selectedLevel3}`;
+      } else {
+        val = selectedLevel1;
       }
-    );
+      if (val.indexOf("-lc") !== -1 || val.indexOf("cobertura") !== -1) {
+        setColormap("tab10");
+        setColormapList(qualcmaps);
+      } else if (qualcmaps.includes(colormap)) {
+        setColormap("inferno");
+        setColormapList(quantcmaps);
+      }
+
+      GetStac(`/collections/${selectedCollection}/items/${val}`, {}).then(
+        (res: any) => {
+          if (res.data) {
+            setSelectedLayerURL(
+              res.data.assets[Object.keys(res.data.assets)[0]].href
+            );
+            setSelectedLayerAssetName(Object.keys(res.data.assets)[0]);
+            navigate(`/apps/io-layers/${selectedCollection}/${val}`);
+          }
+        }
+      );
+    }
   };
 
   const handleLevel1Change = (e: any) => {
@@ -291,11 +291,17 @@ function IOSidebar(props: any) {
             setSelectedLevel1(`${tt[0]}_${tt[1]}`);
             setSelectedLevel2(tt[2]);
             setSelectedLevel3(tt[3]);
-          } else if (collection === "chelsa-clim") {
+          } else if (collection === "chelsa-monthly") {
             const tt: any = item.split("_");
-            setSelectedLevel1(tt[1]);
-            setSelectedLevel2(tt[2]);
-            setSelectedLevel3(tt[3]);
+            setSelectedLevel1(tt[0]);
+            let month = "1";
+            if (parseInt(tt[2]) < 10) {
+              month = `0${parseInt(tt[2])}`;
+            } else {
+              month = tt[2];
+            }
+            setSelectedLevel2(month);
+            setSelectedLevel3(tt[1]);
           }
           setSelectedLayer(item);
         }
