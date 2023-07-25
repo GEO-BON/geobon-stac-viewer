@@ -37,34 +37,29 @@ export default function Digitizer({
     }
   }, [geojson]);
 
-  const onCreate = () => {
+  const handleChange = () => {
+    setShowStatsButton(true);
     const geo = ref.current?.toGeoJSON();
     if (geo?.type === "FeatureCollection") {
       setGeojson(geo);
     }
   };
 
-  const onEditStop = () => {
-    const geo: any = ref.current?.toGeoJSON();
-    setGeojson(geo);
-  };
-
-  const onDeleteStop = () => {
-    const geo: any = ref.current?.toGeoJSON();
-    const g: FeatureCollection = {
-      type: "FeatureCollection",
-      features: [],
-    };
-    setGeojson(geo);
+  const handleDelete = () => {
+    setShowStatsButton(false);
+    const geo = ref.current?.toGeoJSON();
+    if (geo?.type === "FeatureCollection" && geo.features.length > 0) {
+      setGeojson(geo);
+    }
   };
 
   return (
     <FeatureGroup ref={ref}>
       <EditControl
         position="topright"
-        onEditStop={onEditStop}
-        onCreated={onCreate}
-        /*onDeleteStop={onDeleteStop}*/
+        onEdited={handleChange}
+        onCreated={handleChange}
+        onDeleted={handleDelete}
         draw={{
           rectangle: true,
           circle: false,

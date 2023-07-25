@@ -27,15 +27,11 @@ function MapWrapper(props: any) {
   const [mapWidth, setMapWidth] = useState("100vw");
   const [opacity, setOpacity] = useState("80");
   const [openStatsModal, setOpenStatsModal] = useState(false);
-<<<<<<< HEAD
-  const [showRasterStatsControl, setShowRasterStatsControl] = useState(false);
-=======
   const [showStatsButton, setShowStatsButton] = useState(false);
   const emptyFC: FeatureCollection = {
     type: "FeatureCollection",
     features: [],
   };
->>>>>>> tmp_working
   const [geojson, setGeojson] = useState<FeatureCollection>({
     type: "FeatureCollection",
     features: [],
@@ -51,14 +47,6 @@ function MapWrapper(props: any) {
       });
     }
   };
-
-  useEffect(() => {
-    if (geojson.features.length > 0) {
-      setShowRasterStatsControl(true);
-    } else {
-      setShowRasterStatsControl(false);
-    }
-  }, [geojson]);
 
   /**
    * props for Customlayer component
@@ -94,23 +82,26 @@ function MapWrapper(props: any) {
           />
           <ZoomControl position="topright" />
           <ScaleControl position="bottomright" />
-          <Digitizer geojson={geojson} setGeojson={setGeojson} />
-          {showRasterStatsControl && (
-            <Control position="topright">
-              <Button
-                sx={{
-                  background: "white",
-                  padding: "3px 0px 3px 0px",
-                  width: "auto",
-                  minWidth: "35px",
-                  border: "2px solid #00000077",
-                }}
-                onClick={generateStats}
-              >
-                <QueryStatsIcon />
-              </Button>
-            </Control>
-          )}
+          <Digitizer
+            geojson={geojson}
+            setGeojson={setGeojson}
+            setShowStatsButton={setShowStatsButton}
+          />
+          <Control position="topright">
+            <Button
+              sx={{
+                background: "white",
+                padding: "3px 0px 3px 0px",
+                width: "auto",
+                minWidth: "35px",
+                border: "2px solid #00000077",
+                display: `${showStatsButton ? "" : "none"}`, //Can't remove component since it crashes when there are no features
+              }}
+              onClick={generateStats}
+            >
+              <QueryStatsIcon />
+            </Button>
+          </Control>
         </MapContainer>
         <StatsModal
           rasterStats={rasterStats}

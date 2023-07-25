@@ -87,7 +87,7 @@ export const GetStac = async (endpoint: string, paramObj: any) => {
     result = await axios({
       method: "get",
       baseURL: `${base_url}${endpoint}`,
-      data: { limit: 100 },
+      params: { limit: 100 },
     });
   } catch (error) {
     result = { data: null };

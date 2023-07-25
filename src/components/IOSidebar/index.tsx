@@ -210,10 +210,6 @@ function IOSidebar(props: any) {
             });
           }
           setLevel1List(items);
-          /*if (e.layerSelected !== undefined && e.layerSelected !== "") {
-            //Route set the item
-            setSelectedLayer(e.layerSelected);
-          }*/
         }
       );
     }
@@ -302,6 +298,8 @@ function IOSidebar(props: any) {
             }
             setSelectedLevel2(month);
             setSelectedLevel3(tt[1]);
+          } else {
+            setSelectedLevel1(item);
           }
           setSelectedLayer(item);
         }
