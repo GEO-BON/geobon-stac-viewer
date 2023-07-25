@@ -283,20 +283,24 @@ function IOSidebar(props: any) {
   }, []);
 
   useEffect(() => {
-    handleCollectionChange({ value: collection }).then(() => {
-      if (collection === "global-mammals") {
-        const tt: any = item.split("_");
-        setSelectedLevel1(`${tt[0]}_${tt[1]}`);
-        setSelectedLevel2(tt[2]);
-        setSelectedLevel3(tt[3]);
-      } else {
-        const tt: any = item.split("_");
-        setSelectedLevel1(tt[1]);
-        setSelectedLevel2(tt[2]);
-        setSelectedLevel3(tt[3]);
-      }
-      setSelectedLayer(item);
-    });
+    if (collection) {
+      handleCollectionChange({ value: collection }).then(() => {
+        if (item) {
+          if (collection === "global-mammals") {
+            const tt: any = item.split("_");
+            setSelectedLevel1(`${tt[0]}_${tt[1]}`);
+            setSelectedLevel2(tt[2]);
+            setSelectedLevel3(tt[3]);
+          } else if (collection === "chelsa-clim") {
+            const tt: any = item.split("_");
+            setSelectedLevel1(tt[1]);
+            setSelectedLevel2(tt[2]);
+            setSelectedLevel3(tt[3]);
+          }
+          setSelectedLayer(item);
+        }
+      });
+    }
   }, [collection, item]);
 
   return (
