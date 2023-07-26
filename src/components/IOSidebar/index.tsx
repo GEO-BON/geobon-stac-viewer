@@ -177,6 +177,7 @@ function IOSidebar(props: any) {
         },
         datetime: "2015-01-01T00:00:00Z",
         limit: 500,
+        offset: 500,
       }).then((res: any) => {
         let items: any = res.data.features.map((c: any) => ({
           option: c.properties.species.replace("_", " "),
@@ -196,7 +197,10 @@ function IOSidebar(props: any) {
           if (res.data) {
             items = res.data.features.map((c: any) => {
               let option = c.properties.description;
-              if (c.collection === "esacci-lc") {
+              if (
+                c.collection === "esacci-lc" ||
+                c.collection === "fragmentation-rmf"
+              ) {
                 option = c.properties.year;
               } else if (c.collection === "chelsa-clim-proj") {
                 option = `${c.properties.variable}-${c.properties.rcp}-${c.properties.model}`;
