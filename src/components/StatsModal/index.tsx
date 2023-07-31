@@ -5,13 +5,16 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Barchart from "./barchart";
 
 export default function StatsModal(props: any) {
-  const { rasterStats, openStatsModal, setOpenStatsModal } = props;
+  const { rasterStats, openStatsModal, setOpenStatsModal, selectedCountry } =
+    props;
   const handleOpen = () => setOpenStatsModal(true);
   const handleClose = () => setOpenStatsModal(false);
   const [histoData, setHistoData] = useState({});
@@ -31,11 +34,18 @@ export default function StatsModal(props: any) {
 
   useEffect(() => {
     let hd: any = [];
-    const h = rasterStats.features[0]?.properties.statistics.b1.histogram;
-    if (h) {
-      let i;
-      for (i = 0; i < h[0].length; i++) {
-        hd.push({ xval: h[1][i], yval: h[0][i] });
+    for (const place in rasterStats) {
+      if (rasterStats[place] && rasterStats[place].b1) {
+        let h = rasterStats[place].b1.histogram;
+        if (h) {
+          let m = 0;
+          for (let i = 0; i < h[0].length; i++) {
+            m = Math.max(m, h[1][i]);
+          }
+          for (let i = 0; i < h[0].length; i++) {
+            hd.push({ xval: h[1][i], yval: h[0][i] / m, place: place });
+          }
+        }
       }
     }
     setHistoData(hd);
@@ -50,35 +60,13 @@ export default function StatsModal(props: any) {
     >
       <Box sx={style}>
         <Typography id="modal-modal-title" variant="h6" component="h2">
-          Statistics for selected area
+          Statistics for selected areas
         </Typography>
-        {rasterStats &&
-          rasterStats.features &&
-          rasterStats.features.length > 0 && (
-            <>
-              <Barchart data={histoData} />
-              <List>
-                <ListItem>
-                  <strong>Mean</strong>:{" "}
-                  {Math.trunc(
-                    rasterStats.features[0].properties.statistics.b1.mean * 100
-                  ) / 100}
-                </ListItem>
-                <ListItem>
-                  <strong>Min</strong>:{" "}
-                  {Math.trunc(
-                    rasterStats.features[0].properties.statistics.b1.min * 100
-                  ) / 100}
-                </ListItem>
-                <ListItem>
-                  <strong>Max</strong>:{" "}
-                  {Math.trunc(
-                    rasterStats.features[0].properties.statistics.b1.max * 100
-                  ) / 100}
-                </ListItem>
-              </List>
-            </>
-          )}
+        {rasterStats && (
+          <>
+            <Barchart data={histoData} />
+          </>
+        )}
       </Box>
     </Modal>
   );

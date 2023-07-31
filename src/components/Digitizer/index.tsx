@@ -18,7 +18,7 @@ export default function Digitizer({
   const ref = useRef<L.FeatureGroup>(null);
 
   useEffect(() => {
-    if (ref.current?.getLayers().length === 0 && geojson) {
+    if (geojson) {
       L.geoJSON(geojson).eachLayer((layer) => {
         if (
           layer instanceof L.Polyline ||
@@ -41,6 +41,7 @@ export default function Digitizer({
     setShowStatsButton(true);
     const geo = ref.current?.toGeoJSON();
     if (geo?.type === "FeatureCollection") {
+      // geo.features[0].properties.place = "Area";
       setGeojson(geo);
     }
   };

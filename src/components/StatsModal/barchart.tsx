@@ -11,19 +11,16 @@ export default function BarChart({ data }: Props) {
 
   useEffect(() => {
     const barChart = Plot.plot({
-      marks: [
-        Plot.barY(data, {
-          x: "xval",
-          y: "yval",
-          fill: "orange",
-        }),
-        Plot.axisX({ label: "Value" }),
-        Plot.axisY({ label: "Frequency", marginTop: 100 }),
-        Plot.ruleY([0]),
-      ],
       y: {
         grid: true,
       },
+      marks: [
+        Plot.barY(data, { y: "yval", x: "xval", fill: "place" }),
+        Plot.axisX({ label: "Value", interval: 1 }),
+        Plot.axisY({ label: "Frequency", marginTop: 100 }),
+        Plot.ruleY([0]),
+      ],
+      color: { legend: true },
       marginTop: 20,
       marginLeft: 60,
       marginRight: 60,

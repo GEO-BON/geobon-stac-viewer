@@ -191,3 +191,87 @@ export const GetCOGBounds = async (link: any) => {
   }
   return result;
 };
+
+/**
+ * function used to make any custom request
+ * @param {*} endpoint
+ * @param {*} paramObj
+ * @returns
+ */
+export const GetCountryList = async () => {
+  let result;
+  const base_url = `https://geoio.biodiversite-quebec.ca/country_list`;
+  try {
+    result = await axios({
+      method: "get",
+      url: base_url,
+      params: {},
+      /*headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },*/
+    });
+  } catch (error) {
+    console.log(error);
+    result = { data: null };
+  }
+  return result;
+};
+
+/**
+ * function used to make any custom request
+ * @param {*} endpoint
+ * @param {*} paramObj
+ * @returns
+ */
+export const GetCountryStats = async (
+  country_name: string,
+  cog_url: string
+) => {
+  let result;
+  const base_url = `https://geoio.biodiversite-quebec.ca/country_stats`;
+  const params = {
+    name: country_name,
+    cog_url: cog_url,
+  };
+  try {
+    result = await axios({
+      method: "get",
+      url: base_url,
+      params: params,
+    });
+  } catch (error) {
+    console.log(error);
+    result = { data: null };
+  }
+  return result.data;
+};
+
+/**
+ * function used to make any custom request
+ * @param {*} endpoint
+ * @param {*} paramObj
+ * @returns
+ */
+export const GetCountryGeojson = async (country_name: string) => {
+  let result;
+  const base_url = `https://geoio.biodiversite-quebec.ca/country_geojson`;
+  const params = {
+    country_name: country_name,
+  };
+  try {
+    result = await axios({
+      method: "get",
+      url: base_url,
+      params: params,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    result = { data: null };
+  }
+  return result;
+};
