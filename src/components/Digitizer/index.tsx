@@ -19,6 +19,7 @@ export default function Digitizer({
 
   useEffect(() => {
     if (geojson) {
+      ref.current?.clearLayers();
       L.geoJSON(geojson).eachLayer((layer) => {
         if (
           layer instanceof L.Polyline ||
@@ -41,15 +42,19 @@ export default function Digitizer({
     setShowStatsButton(true);
     const geo = ref.current?.toGeoJSON();
     if (geo?.type === "FeatureCollection") {
-      // geo.features[0].properties.place = "Area";
+      geo.features.forEach((f: any) => {
+        if (!f.properties.place) {
+          f.properties.place = "Area";
+        }
+      });
       setGeojson(geo);
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = (l: any) => {
     setShowStatsButton(false);
     const geo = ref.current?.toGeoJSON();
-    if (geo?.type === "FeatureCollection" && geo.features.length > 0) {
+    if (geo?.type === "FeatureCollection") {
       setGeojson(geo);
     }
   };

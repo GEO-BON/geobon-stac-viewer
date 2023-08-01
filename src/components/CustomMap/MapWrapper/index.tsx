@@ -57,7 +57,10 @@ function MapWrapper(props: any) {
     GetCountryGeojson(value).then((g: any) => {
       if (g.data) {
         const gj = { ...geojson };
-        gj.features.push(g.data.features);
+        g.data.features.forEach((f: any) => {
+          f.properties.place = value;
+        });
+        gj.features.push(g.data.features[0]);
         setGeojson(gj);
       }
     });
@@ -67,25 +70,23 @@ function MapWrapper(props: any) {
     setRasterStats({});
     setOpenStatsModal(true);
     if (geojson?.features.length > 0) {
+      let i = 0;
       GetCOGStatsGeojson(selectedLayerURL, geojson).then((g: any) => {
+        const rs: any = {};
         if (g.data) {
-          const rs: any = { ...rasterStats };
-          rs[`${geojson.features[0].properties?.place}`] =
-            g.data.features[0].properties.statistics;
+          g.data.features.map((m: any) => {
+            if (m.properties.place === "Area") {
+              m.properties.place = `Area_${i}`;
+              i += 1;
+            }
+            rs[m.properties.place] = m.properties.statistics;
+          });
           setRasterStats(rs);
         }
       });
     }
     if (selectedCountry && selectedLayerURL) {
       setOpenStatsModal(true);
-      setGeojson(emptyFC);
-
-      /*GetCountryStats(selectedCountry, selectedLayerURL).then((stats: any) => {
-        const rs: any = { ...rasterStats };
-        rs[selectedCountry] = stats;
-        setRasterStats(rs);
-        setOpenStatsModal(true);
-      });*/
       setShowStatsButton(true);
     }
   };
@@ -95,6 +96,12 @@ function MapWrapper(props: any) {
       setCountryList(cl.data);
     });
   }, []);
+
+  useEffect(() => {
+    if (geojson.features.length > 0) {
+      setShowStatsButton(true);
+    }
+  }, [geojson]);
 
   /**
    * props for Customlayer component

@@ -18,6 +18,7 @@ export default function StatsModal(props: any) {
   const handleOpen = () => setOpenStatsModal(true);
   const handleClose = () => setOpenStatsModal(false);
   const [histoData, setHistoData] = useState({});
+  const [bounds, setBounds] = useState([0, 100]);
 
   const style = {
     position: "absolute" as "absolute",
@@ -34,13 +35,17 @@ export default function StatsModal(props: any) {
 
   useEffect(() => {
     let hd: any = [];
+    let minx = 9999999;
+    let maxx = -9999999;
     for (const place in rasterStats) {
       if (rasterStats[place] && rasterStats[place].b1) {
         let h = rasterStats[place].b1.histogram;
         if (h) {
-          let m = 0;
+          let m = -999999;
           for (let i = 0; i < h[0].length; i++) {
-            m = Math.max(m, h[1][i]);
+            m = Math.max(m, h[0][i]);
+            minx = Math.floor(Math.min(minx, h[1][i]));
+            maxx = Math.ceil(Math.max(maxx, h[1][i]));
           }
           for (let i = 0; i < h[0].length; i++) {
             hd.push({ xval: h[1][i], yval: h[0][i] / m, place: place });
@@ -48,6 +53,7 @@ export default function StatsModal(props: any) {
         }
       }
     }
+    setBounds([minx, maxx]);
     setHistoData(hd);
   }, [rasterStats]);
 
@@ -64,7 +70,7 @@ export default function StatsModal(props: any) {
         </Typography>
         {rasterStats && (
           <>
-            <Barchart data={histoData} />
+            <Barchart data={histoData} bounds={bounds} />
           </>
         )}
       </Box>
