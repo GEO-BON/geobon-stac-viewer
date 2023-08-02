@@ -28,6 +28,8 @@ export default function IOLayers(props: any) {
   const [legend, setLegend] = useState({});
   const [colormap, setColormap] = useState("inferno");
   const [colormapList, setColormapList] = useState(quantcmaps);
+  const [isTimeSeriesCollection, setIsTimeSeriesCollection] = useState(false);
+  const [timeSeriesLayers, setTimeSeriesLayers] = useState([]);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -48,6 +50,8 @@ export default function IOLayers(props: any) {
     quantcmaps,
     colormap,
     logIt,
+    setIsTimeSeriesCollection,
+    setTimeSeriesLayers,
   };
 
   const leftContentProps = {
@@ -119,6 +123,8 @@ export default function IOLayers(props: any) {
     setItem,
     colormap,
     colormapList,
+    isTimeSeriesCollection,
+    timeSeriesLayers,
   };
 
   return (

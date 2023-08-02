@@ -26,6 +26,8 @@ function IOSidebar(props: any) {
     quantcmaps,
     colormap,
     logIt,
+    setIsTimeSeriesCollection,
+    setTimeSeriesLayers,
   } = props;
   const [collectionList, setCollectionList] = useState([
     { option: "", value: "" },
@@ -78,6 +80,8 @@ function IOSidebar(props: any) {
       value: v,
     })
   );
+
+  const timeSeriesCollections = ["fragmentation-rmf"];
 
   interface chelsaVariableList {
     option: string;
@@ -190,6 +194,7 @@ function IOSidebar(props: any) {
       setShowLevel3(false);
       setShowLevel1(true);
       setLevel1Title("Variable");
+      let timeSeriesLayers: any = [];
       GetStac(`/collections/${e.value}/items`, { limit: 200 }).then(
         (res: any) => {
           let items: any = "";
@@ -207,12 +212,19 @@ function IOSidebar(props: any) {
               } else if (c.collection === "soilgrids") {
                 option = `${c.properties.variable}-${c.properties.depth}`;
               }
+              if (c.collection === "fragmentation-rmf") {
+                timeSeriesLayers.push({
+                  year: c.properties.year,
+                  url: c.assets.data.href,
+                });
+              }
               return {
                 option: option,
                 value: c.id,
               };
             });
           }
+          setTimeSeriesLayers(timeSeriesLayers);
           setLevel1List(items);
         }
       );
@@ -271,6 +283,13 @@ function IOSidebar(props: any) {
   useEffect(() => {
     handleLayerChange();
   }, [selectedLevel1, selectedLevel2, selectedLevel3]);
+
+  useEffect(() => {
+    setIsTimeSeriesCollection(false);
+    if (timeSeriesCollections.includes(collection)) {
+      setIsTimeSeriesCollection(true);
+    }
+  }, [selectedCollection]);
 
   useEffect(() => {
     GetStac("/collections", {}).then((res: any) => {

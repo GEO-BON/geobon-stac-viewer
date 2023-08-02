@@ -275,3 +275,78 @@ export const GetCountryGeojson = async (country_name: string) => {
   }
   return result;
 };
+
+/**
+ * function used to make any custom request
+ * @param {*} endpoint
+ * @param {*} paramObj
+ * @returns
+ */
+export const GetMultipleCOGStatsGeojson2 = async (
+  geojson: any,
+  cog_urls: any
+) => {
+  return axios
+    .all(
+      cog_urls.map((cu: any) => {
+        const obj = { url: cu.url, year: cu.year }; //Year is not a param but used here to be passed down
+        const base_url = `https://tiler.biodiversite-quebec.ca/cog/statistics`;
+        let result: any = {};
+        try {
+          result = axios({
+            method: "post",
+            baseURL: base_url,
+            withCredentials: false,
+            data: geojson,
+            params: obj,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+          });
+        } catch (error) {
+          console.log(error);
+          result = { data: null };
+        }
+        return result;
+      })
+    )
+    .then((responses) => {
+      const resp: any = {};
+      responses.map((m: any) => {
+        const y: any = new URLSearchParams(m.request.responseURL).get("year");
+        resp[y] = [];
+        m.data.features.map((f: any) => {
+          resp[y].push(f.properties);
+        });
+      });
+      return resp;
+    });
+};
+
+export const GetMultipleCOGStatsGeojson = async (
+  geojson: any,
+  cog_urls: any
+) => {
+  let result;
+  const base_url = `https://geoio.biodiversite-quebec.ca/geojson_stats_many_urls`;
+  const params = {
+    cog_urls: cog_urls,
+    geojson: geojson,
+  };
+  try {
+    result = await axios({
+      method: "get",
+      url: base_url,
+      params: params,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    result = { data: null };
+  }
+  return result;
+};

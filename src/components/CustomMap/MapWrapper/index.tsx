@@ -4,6 +4,8 @@ import { MapContainer, ScaleControl, ZoomControl } from "react-leaflet";
 import Control from "react-leaflet-custom-control";
 import { Button, Autocomplete, TextField } from "@mui/material";
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import InsightsIcon from "@mui/icons-material/Insights";
 import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import MSMapSlider from "../MSMapSlider";
 import CustomLayer from "../CustomLayer";
@@ -19,6 +21,7 @@ import {
   GetCountryList,
   GetCountryStats,
   GetCountryGeojson,
+  GetMultipleCOGStatsGeojson,
 } from "../../helpers/api";
 
 /**
@@ -29,7 +32,7 @@ import {
 function MapWrapper(props: any) {
   //const generalState = useSelector((state: any) => state.reducerState);
   //const drawerOpen = useSelector((state: any) => state.reducerState.drawerOpen);
-  const { selectedLayerURL } = props;
+  const { selectedLayerURL, isTimeSeriesCollection, timeSeriesLayers } = props;
   const [mapWidth, setMapWidth] = useState("100vw");
   const [opacity, setOpacity] = useState("80");
   const [openStatsModal, setOpenStatsModal] = useState(false);
@@ -45,6 +48,7 @@ function MapWrapper(props: any) {
 
   const [geojson, setGeojson] = useState<FeatureCollection>(emptyFC);
   const [rasterStats, setRasterStats] = useState({});
+  const [timeSeriesStats, setTimeSeriesStats] = useState({});
 
   const handleCountryChange = (value: any, reason: any) => {
     if (reason === "clear") {
@@ -82,6 +86,29 @@ function MapWrapper(props: any) {
             rs[m.properties.place] = m.properties.statistics;
           });
           setRasterStats(rs);
+        }
+      });
+    }
+    if (selectedCountry && selectedLayerURL) {
+      setOpenStatsModal(true);
+      setShowStatsButton(true);
+    }
+  };
+
+  const generateTimeSeries = () => {
+    setRasterStats({});
+    setOpenStatsModal(true);
+    if (geojson?.features.length > 0) {
+      GetMultipleCOGStatsGeojson(geojson, timeSeriesLayers).then((st: any) => {
+        const rs: any = {};
+        if (st) {
+          for (let s in st) {
+            rs[s] = {};
+            st[s].map((m: any) => {
+              rs[s][m.place] = m.statistics;
+            });
+          }
+          setTimeSeriesStats(rs);
         }
       });
     }
@@ -154,7 +181,22 @@ function MapWrapper(props: any) {
               }}
               onClick={generateStats}
             >
-              <QueryStatsIcon />
+              <BarChartIcon />
+            </Button>
+            <Button
+              sx={{
+                background: "white",
+                padding: "3px 0px 3px 0px",
+                width: "auto",
+                minWidth: "35px",
+                border: "2px solid #00000077",
+                display: `${
+                  showStatsButton && isTimeSeriesCollection ? "" : "none"
+                }`, //Can't remove component since it crashes when there are no features
+              }}
+              onClick={generateTimeSeries}
+            >
+              <InsightsIcon />
             </Button>
           </Control>
           <Control position="topright">
@@ -197,6 +239,7 @@ function MapWrapper(props: any) {
         </MapContainer>
         <StatsModal
           rasterStats={rasterStats}
+          timeSeriesStats={timeSeriesStats}
           setOpenStatsModal={setOpenStatsModal}
           openStatsModal={openStatsModal}
           selectedCountry={selectedCountry}

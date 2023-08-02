@@ -11,13 +11,20 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Barchart from "./barchart";
+import TimeSeries from "./timeseries";
 
 export default function StatsModal(props: any) {
-  const { rasterStats, openStatsModal, setOpenStatsModal, selectedCountry } =
-    props;
+  const {
+    rasterStats,
+    openStatsModal,
+    setOpenStatsModal,
+    selectedCountry,
+    timeSeriesStats,
+  } = props;
   const handleOpen = () => setOpenStatsModal(true);
   const handleClose = () => setOpenStatsModal(false);
   const [histoData, setHistoData] = useState({});
+  const [tsData, setTsData] = useState({});
   const [bounds, setBounds] = useState([0, 100]);
 
   const style = {
@@ -57,6 +64,26 @@ export default function StatsModal(props: any) {
     setHistoData(hd);
   }, [rasterStats]);
 
+  useEffect(() => {
+    let hd: any = [];
+    for (const year in timeSeriesStats) {
+      for (let place in timeSeriesStats[year])
+        if (timeSeriesStats[year][place] && timeSeriesStats[year][place].b1) {
+          let h = timeSeriesStats[year][place].b1;
+          if (h) {
+            hd.push({
+              date: year,
+              place: place,
+              mean: h.mean,
+              percentile_2: h.percentile_2,
+              percentile_98: h.percentile_98,
+            });
+          }
+        }
+    }
+    setTsData(hd);
+  }, [timeSeriesStats]);
+
   return (
     <Modal
       open={openStatsModal}
@@ -65,12 +92,29 @@ export default function StatsModal(props: any) {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <Typography id="modal-modal-title" variant="h6" component="h2">
-          Statistics for selected areas
-        </Typography>
         {rasterStats && (
           <>
-            <Barchart data={histoData} bounds={bounds} />
+            {rasterStats && (
+              <>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  Statistics for selected areas
+                </Typography>
+
+                <Barchart data={histoData} bounds={bounds} />
+              </>
+            )}
+          </>
+        )}
+        {timeSeriesStats && (
+          <>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Time series for selected areas
+            </Typography>
+            {rasterStats && (
+              <>
+                <TimeSeries data={tsData} bounds={bounds} />
+              </>
+            )}
           </>
         )}
       </Box>
