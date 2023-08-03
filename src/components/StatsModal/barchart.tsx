@@ -21,8 +21,9 @@ export default function BarChart({ data, bounds }: Props) {
           y2: "yval",
           x: "xval",
           interval: Math.ceil((bounds[1] - bounds[0]) / 20),
-          fill: "place",
           mixBlendMode: "saturation",
+          fy: "place",
+          fill: "place",
         }),
         Plot.axisX(d3.ticks(bounds[0], bounds[1], 15), {
           label: "Value",

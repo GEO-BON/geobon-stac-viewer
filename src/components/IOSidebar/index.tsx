@@ -152,6 +152,7 @@ function IOSidebar(props: any) {
 
   const handleCollectionChange = async (e: any) => {
     setSelectedCollection(e.value);
+    setTimeSeriesLayers([]);
     if (e.value === "chelsa-monthly") {
       setShowLevel1(true);
       setShowLevel2(true);
