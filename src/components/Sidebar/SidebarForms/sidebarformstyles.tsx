@@ -38,7 +38,7 @@ export const Title = styled.div`
   width: 100%;
   border-radius: 8px;
   padding: 0.5em 1em;
-  background: ${colors.bqdarkgreen};
+  background: #038c7c;
   color: ${colors.white};
   align-items: center;
   margin-bottom: 20px;

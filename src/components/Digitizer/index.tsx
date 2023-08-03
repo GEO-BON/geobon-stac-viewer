@@ -22,9 +22,10 @@ export default function Digitizer({
       ref.current?.clearLayers();
       L.geoJSON(geojson).eachLayer((layer) => {
         if (
-          layer instanceof L.Polyline ||
-          layer instanceof L.Polygon ||
-          layer instanceof L.Marker
+          (layer instanceof L.Polyline ||
+            layer instanceof L.Polygon ||
+            layer instanceof L.Marker) &&
+          layer?.feature
         ) {
           if (layer?.feature?.properties.radius && ref.current) {
             new L.Circle(layer.feature.geometry.coordinates.slice().reverse(), {

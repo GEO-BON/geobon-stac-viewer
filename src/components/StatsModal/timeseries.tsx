@@ -12,33 +12,39 @@ export default function TimeSeries({ data, bounds }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (data.length > 0) {
-      const tsChart = Plot.plot({
-        y: {
-          grid: true,
-        },
-        marks: [
-          Plot.lineY(data, {
-            y: "mean",
-            x: "date",
-            stroke: "place",
-          }),
-          Plot.axisX({
-            label: "Year",
-            tickRotate: 90,
-          }),
-          Plot.axisY({ label: "Value", marginTop: 100 }),
-          Plot.ruleY([0]),
-        ],
-        color: { legend: true },
-        marginTop: 20,
-        marginLeft: 60,
-        marginRight: 60,
-        marginBottom: 50,
-      });
-      ref.current?.append(tsChart);
-      return () => tsChart.remove();
-    }
+    const tsChart = Plot.plot({
+      y: {
+        grid: true,
+      },
+      marks: [
+        Plot.lineY(data, {
+          y: "mean",
+          x: (d) => d3.utcParse("%Y")(d.date),
+          stroke: "place",
+          strokeWidth: 3,
+        }),
+        Plot.dot(data, {
+          y: "mean",
+          x: (d) => d3.utcParse("%Y")(d.date),
+          stroke: "place",
+          r: 3,
+          fill: "place",
+        }),
+        Plot.axisX({
+          label: "Year",
+          tickRotate: 90,
+        }),
+        Plot.axisY({ label: "Value", marginTop: 100 }),
+        Plot.ruleY([0]),
+      ],
+      color: { legend: true },
+      marginTop: 20,
+      marginLeft: 60,
+      marginRight: 60,
+      marginBottom: 50,
+    });
+    ref.current?.append(tsChart);
+    return () => tsChart.remove();
   }, [data]);
 
   return (

@@ -214,7 +214,7 @@ function IOSidebar(props: any) {
               }
               if (c.collection === "fragmentation-rmf") {
                 timeSeriesLayers.push({
-                  year: c.properties.year,
+                  ref: c.properties.year.toString(),
                   url: c.assets.data.href,
                 });
               }

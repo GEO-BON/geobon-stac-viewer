@@ -257,7 +257,7 @@ export const GetCountryGeojson = async (country_name: string) => {
   let result;
   const base_url = `https://geoio.biodiversite-quebec.ca/country_geojson`;
   const params = {
-    country_name: country_name,
+    country_name: country_name?.replace(/'/g, "%27"),
   };
   try {
     result = await axios({
@@ -330,15 +330,15 @@ export const GetMultipleCOGStatsGeojson = async (
 ) => {
   let result;
   const base_url = `https://geoio.biodiversite-quebec.ca/geojson_stats_many_urls`;
-  const params = {
+  const data = {
     cog_urls: cog_urls,
     geojson: geojson,
   };
   try {
     result = await axios({
-      method: "get",
+      method: "post",
       url: base_url,
-      params: params,
+      data: data,
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",

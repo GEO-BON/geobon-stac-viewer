@@ -1,17 +1,14 @@
 import React, { useRef, useEffect, useState } from "react";
 import { cmap } from "../helpers/colormaps";
 import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Barchart from "./barchart";
 import TimeSeries from "./timeseries";
+import LinearProgress, {
+  linearProgressClasses,
+} from "@mui/material/LinearProgress";
+import { styled } from "@mui/material/styles";
 
 export default function StatsModal(props: any) {
   const {
@@ -23,6 +20,8 @@ export default function StatsModal(props: any) {
   } = props;
   const handleOpen = () => setOpenStatsModal(true);
   const handleClose = () => setOpenStatsModal(false);
+  const [showHisto, setShowHisto] = useState(false);
+  const [showTS, setShowTS] = useState(false);
   const [histoData, setHistoData] = useState({});
   const [tsData, setTsData] = useState({});
   const [bounds, setBounds] = useState([0, 100]);
@@ -39,6 +38,18 @@ export default function StatsModal(props: any) {
     boxShadow: 24,
     p: 4,
   };
+
+  const BorderLinearProgress = styled(LinearProgress)(({}) => ({
+    height: 10,
+    borderRadius: 5,
+    [`&.${linearProgressClasses.colorPrimary}`]: {
+      backgroundColor: "#038c7c",
+    },
+    [`& .${linearProgressClasses.bar}`]: {
+      borderRadius: 5,
+      backgroundColor: "white",
+    },
+  }));
 
   useEffect(() => {
     let hd: any = [];
@@ -77,12 +88,24 @@ export default function StatsModal(props: any) {
               mean: h.mean,
               percentile_2: h.percentile_2,
               percentile_98: h.percentile_98,
+              std: h.std,
             });
           }
         }
     }
     setTsData(hd);
   }, [timeSeriesStats]);
+
+  useEffect(() => {
+    setShowHisto(false);
+    setShowTS(false);
+    if (rasterStats && Object.keys(rasterStats).length > 0) {
+      setShowHisto(true);
+    }
+    if (timeSeriesStats && Object.keys(timeSeriesStats).length > 0) {
+      setShowTS(true);
+    }
+  }, [rasterStats, timeSeriesStats]);
 
   return (
     <Modal
@@ -92,7 +115,12 @@ export default function StatsModal(props: any) {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        {rasterStats && (
+        {!showHisto && !showTS && (
+          <Box sx={{ width: "100%" }}>
+            <BorderLinearProgress />
+          </Box>
+        )}
+        {showHisto && (
           <>
             {rasterStats && (
               <>
@@ -105,7 +133,7 @@ export default function StatsModal(props: any) {
             )}
           </>
         )}
-        {timeSeriesStats && (
+        {showTS && (
           <>
             <Typography id="modal-modal-title" variant="h6" component="h2">
               Time series for selected areas

@@ -72,6 +72,7 @@ function MapWrapper(props: any) {
 
   const generateStats = () => {
     setRasterStats({});
+    setTimeSeriesStats({});
     setOpenStatsModal(true);
     if (geojson?.features.length > 0) {
       let i = 0;
@@ -97,18 +98,12 @@ function MapWrapper(props: any) {
 
   const generateTimeSeries = () => {
     setRasterStats({});
+    setTimeSeriesStats({});
     setOpenStatsModal(true);
     if (geojson?.features.length > 0) {
       GetMultipleCOGStatsGeojson(geojson, timeSeriesLayers).then((st: any) => {
-        const rs: any = {};
-        if (st) {
-          for (let s in st) {
-            rs[s] = {};
-            st[s].map((m: any) => {
-              rs[s][m.place] = m.statistics;
-            });
-          }
-          setTimeSeriesStats(rs);
+        if (st?.data) {
+          setTimeSeriesStats(st.data);
         }
       });
     }
