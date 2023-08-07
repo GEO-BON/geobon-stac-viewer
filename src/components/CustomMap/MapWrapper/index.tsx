@@ -6,6 +6,7 @@ import { Button, Autocomplete, TextField } from "@mui/material";
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import InsightsIcon from "@mui/icons-material/Insights";
+import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
 import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import MSMapSlider from "../MSMapSlider";
 import CustomLayer from "../CustomLayer";
@@ -19,8 +20,10 @@ import StatsModal from "../../StatsModal";
 import {
   GetCOGStatsGeojson,
   GetCountryList,
+  GetStateList,
   GetCountryStats,
   GetCountryGeojson,
+  GetStateGeojson,
   GetMultipleCOGStatsGeojson,
 } from "../../helpers/api";
 
@@ -39,7 +42,9 @@ function MapWrapper(props: any) {
   const [showStatsButton, setShowStatsButton] = useState(false);
   const [activeSearch, setActiveSearch] = useState(false);
   const [countryList, setCountryList] = useState([]);
+  const [stateList, setStateList] = useState([]);
   const [selectedCountry, setSelectedCountry] = React.useState("");
+  const [selectedState, setSelectedState] = React.useState("");
 
   const emptyFC: FeatureCollection = {
     type: "FeatureCollection",
@@ -56,18 +61,48 @@ function MapWrapper(props: any) {
     }
     if (value) {
       setShowStatsButton(true);
+      GetStateList(value).then((sl) => {
+        setStateList(sl.data);
+      });
     }
+    setSelectedState("");
     setSelectedCountry(value);
-    GetCountryGeojson(value).then((g: any) => {
-      if (g.data) {
-        const gj = { ...geojson };
-        g.data.features.forEach((f: any) => {
-          f.properties.place = value;
-        });
-        gj.features.push(g.data.features[0]);
-        setGeojson(gj);
-      }
-    });
+  };
+
+  const handleStateChange = (value: any, reason: any) => {
+    if (reason === "clear") {
+      setActiveSearch(false);
+    }
+    if (value) {
+      setShowStatsButton(true);
+    }
+    setSelectedState(value);
+  };
+
+  const handleAddLocationChange = (value: any) => {
+    if (selectedCountry !== "" && selectedState === "") {
+      GetCountryGeojson(selectedCountry).then((g: any) => {
+        if (g.data) {
+          const gj = { ...geojson };
+          g.data.features.forEach((f: any) => {
+            f.properties.place = selectedCountry;
+          });
+          gj.features.push(g.data.features[0]);
+          setGeojson(gj);
+        }
+      });
+    } else if (selectedCountry !== "" && selectedState !== "") {
+      GetStateGeojson(selectedState, selectedCountry).then((g: any) => {
+        if (g.data) {
+          const gj = { ...geojson };
+          g.data.features.forEach((f: any) => {
+            f.properties.place = selectedState;
+          });
+          gj.features.push(g.data.features[0]);
+          setGeojson(gj);
+        }
+      });
+    }
   };
 
   const generateStats = () => {
@@ -214,6 +249,25 @@ function MapWrapper(props: any) {
                 )}
               />
             )}
+            {activeSearch && (
+              <Autocomplete
+                id="combo-box-demo"
+                autoComplete
+                includeInputInList
+                options={stateList}
+                sx={{ width: 200, margin: "2px 2px 2px 0px" }}
+                onChange={(event: any, newValue: any, reason: any) => {
+                  handleStateChange(newValue, reason);
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="State/Province"
+                    sx={{ backgroundColor: "white" }}
+                  />
+                )}
+              />
+            )}
             {!activeSearch && (
               <Button
                 sx={{
@@ -228,6 +282,22 @@ function MapWrapper(props: any) {
                 }}
               >
                 <TravelExploreIcon />
+              </Button>
+            )}
+            {activeSearch && (
+              <Button
+                sx={{
+                  background: "white",
+                  padding: "3px 0px 3px 0px",
+                  width: "auto",
+                  minWidth: "35px",
+                  border: "2px solid #00000077",
+                  margin: "2px 2px 2px 0px",
+                  float: "right",
+                }}
+                onClick={handleAddLocationChange}
+              >
+                <AddLocationAltIcon />
               </Button>
             )}
           </Control>

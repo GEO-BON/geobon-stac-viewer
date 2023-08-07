@@ -74,12 +74,6 @@ export const addTranslation = async (
   return resources;
 };
 
-/**
- * function used to make any custom request
- * @param {*} endpoint
- * @param {*} paramObj
- * @returns
- */
 export const GetStac = async (endpoint: string, paramObj: any) => {
   let result;
   const base_url = "https://io.biodiversite-quebec.ca/stac" as string;
@@ -95,12 +89,6 @@ export const GetStac = async (endpoint: string, paramObj: any) => {
   return result;
 };
 
-/**
- * function used to make any custom request
- * @param {*} endpoint
- * @param {*} paramObj
- * @returns
- */
 export const GetStacSearch = async (searchObj: any) => {
   let result;
   const base_url = "https://io.biodiversite-quebec.ca/stac/search" as string;
@@ -116,12 +104,6 @@ export const GetStacSearch = async (searchObj: any) => {
   return result;
 };
 
-/**
- * function used to make any custom request
- * @param {*} endpoint
- * @param {*} paramObj
- * @returns
- */
 export const GetCOGStats = async (link: any, logTransform: boolean) => {
   let result;
   let expression = "b1*(b1>0)";
@@ -142,12 +124,6 @@ export const GetCOGStats = async (link: any, logTransform: boolean) => {
   return result;
 };
 
-/**
- * function used to make any custom request
- * @param {*} endpoint
- * @param {*} paramObj
- * @returns
- */
 export const GetCOGStatsGeojson = async (link: any, geojson: {}) => {
   let result;
   const obj = { url: link };
@@ -171,12 +147,6 @@ export const GetCOGStatsGeojson = async (link: any, geojson: {}) => {
   return result;
 };
 
-/**
- * function used to make any custom request
- * @param {*} endpoint
- * @param {*} paramObj
- * @returns
- */
 export const GetCOGBounds = async (link: any) => {
   let result;
   const obj = {
@@ -192,12 +162,6 @@ export const GetCOGBounds = async (link: any) => {
   return result;
 };
 
-/**
- * function used to make any custom request
- * @param {*} endpoint
- * @param {*} paramObj
- * @returns
- */
 export const GetCountryList = async () => {
   let result;
   const base_url = `https://geoio.biodiversite-quebec.ca/country_list`;
@@ -218,12 +182,22 @@ export const GetCountryList = async () => {
   return result;
 };
 
-/**
- * function used to make any custom request
- * @param {*} endpoint
- * @param {*} paramObj
- * @returns
- */
+export const GetStateList = async (country_name: string) => {
+  let result;
+  const base_url = `https://geoio.biodiversite-quebec.ca/state_list`;
+  try {
+    result = await axios({
+      method: "get",
+      url: base_url,
+      params: { country_name: country_name },
+    });
+  } catch (error) {
+    console.log(error);
+    result = { data: null };
+  }
+  return result;
+};
+
 export const GetCountryStats = async (
   country_name: string,
   cog_url: string
@@ -231,7 +205,7 @@ export const GetCountryStats = async (
   let result;
   const base_url = `https://geoio.biodiversite-quebec.ca/country_stats`;
   const params = {
-    name: country_name,
+    country_name: country_name,
     cog_url: cog_url,
   };
   try {
@@ -247,17 +221,11 @@ export const GetCountryStats = async (
   return result.data;
 };
 
-/**
- * function used to make any custom request
- * @param {*} endpoint
- * @param {*} paramObj
- * @returns
- */
 export const GetCountryGeojson = async (country_name: string) => {
   let result;
   const base_url = `https://geoio.biodiversite-quebec.ca/country_geojson`;
   const params = {
-    country_name: country_name?.replace(/'/g, "%27"),
+    country_name: country_name,
   };
   try {
     result = await axios({
@@ -276,12 +244,33 @@ export const GetCountryGeojson = async (country_name: string) => {
   return result;
 };
 
-/**
- * function used to make any custom request
- * @param {*} endpoint
- * @param {*} paramObj
- * @returns
- */
+export const GetStateGeojson = async (
+  state_name: string,
+  country_name: string
+) => {
+  let result;
+  const base_url = `https://geoio.biodiversite-quebec.ca/state_geojson`;
+  const params = {
+    state_name: state_name,
+    country_name: country_name,
+  };
+  try {
+    result = await axios({
+      method: "get",
+      url: base_url,
+      params: params,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    result = { data: null };
+  }
+  return result;
+};
+
 export const GetMultipleCOGStatsGeojson2 = async (
   geojson: any,
   cog_urls: any
