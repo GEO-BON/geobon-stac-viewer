@@ -155,6 +155,7 @@ function MapWrapper(props: any) {
   }, []);
 
   useEffect(() => {
+    setShowStatsButton(false);
     if (geojson.features.length > 0) {
       setShowStatsButton(true);
     }
