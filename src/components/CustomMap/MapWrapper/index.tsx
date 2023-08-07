@@ -240,10 +240,12 @@ function MapWrapper(props: any) {
                 onChange={(event: any, newValue: any, reason: any) => {
                   handleCountryChange(newValue, reason);
                 }}
+                size="small"
                 renderInput={(params) => (
                   <TextField
                     {...params}
                     label="Country"
+                    variant="filled"
                     sx={{ backgroundColor: "white" }}
                   />
                 )}
@@ -259,10 +261,12 @@ function MapWrapper(props: any) {
                 onChange={(event: any, newValue: any, reason: any) => {
                   handleStateChange(newValue, reason);
                 }}
+                size="small"
                 renderInput={(params) => (
                   <TextField
                     {...params}
                     label="State/Province"
+                    variant="filled"
                     sx={{ backgroundColor: "white" }}
                   />
                 )}
