@@ -1,21 +1,27 @@
 /* eslint-disable dot-notation */
 import React, { useState, useEffect } from "react";
-import { MapContainer, ScaleControl, ZoomControl } from "react-leaflet";
+import { MapContainer, ScaleControl, ZoomControl, Popup } from "react-leaflet";
+import L from "leaflet";
 import Control from "react-leaflet-custom-control";
-import { Button, Autocomplete, TextField } from "@mui/material";
-import QueryStatsIcon from "@mui/icons-material/QueryStats";
-import BarChartIcon from "@mui/icons-material/BarChart";
+import {
+  Button,
+  Autocomplete,
+  TextField,
+  Typography,
+  Box,
+} from "@mui/material";
 import InsightsIcon from "@mui/icons-material/Insights";
 import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
 import TravelExploreIcon from "@mui/icons-material/TravelExplore";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import MSMapSlider from "../MSMapSlider";
 import CustomLayer from "../CustomLayer";
-import { useSelector, useDispatch } from "react-redux";
 import { MapWrapperContainer } from "../custommapstyles";
-import L from "leaflet";
-import { useParams } from "react-router-dom";
 import Digitizer from "../../Digitizer";
 import type { FeatureCollection } from "geojson";
+import { LatLngExpression } from "leaflet";
+
 import StatsModal from "../../StatsModal";
 import {
   GetCOGStatsGeojson,
@@ -26,6 +32,7 @@ import {
   GetStateGeojson,
   GetMultipleCOGStatsGeojson,
 } from "../../helpers/api";
+import { popup } from "leaflet";
 
 /**
  *
@@ -43,14 +50,20 @@ function MapWrapper(props: any) {
   const [activeSearch, setActiveSearch] = useState(false);
   const [countryList, setCountryList] = useState([]);
   const [stateList, setStateList] = useState([]);
-  const [selectedCountry, setSelectedCountry] = React.useState("");
-  const [selectedState, setSelectedState] = React.useState("");
-
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedState, setSelectedState] = useState("");
+  const [clickedPlace, setClickedPlace] = useState("");
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [popupProps, setPopupProps] = useState({
+    key: 0,
+    position: L.latLng(0, 0),
+  });
   const emptyFC: FeatureCollection = {
     type: "FeatureCollection",
     features: [],
   };
 
+  let numPopups = 0;
   const [geojson, setGeojson] = useState<FeatureCollection>(emptyFC);
   const [rasterStats, setRasterStats] = useState({});
   const [timeSeriesStats, setTimeSeriesStats] = useState({});
@@ -105,13 +118,19 @@ function MapWrapper(props: any) {
     }
   };
 
-  const generateStats = () => {
+  const generateStats = (place: string = "") => {
     setRasterStats({});
     setTimeSeriesStats({});
     setOpenStatsModal(true);
-    if (geojson?.features.length > 0) {
+    let gg = { ...geojson };
+    if (place !== "" && geojson?.features.length > 0) {
+      gg.features = geojson.features.filter(
+        (g: any) => g.properties.place === place
+      );
+    }
+    if (gg?.features.length > 0) {
       let i = 0;
-      GetCOGStatsGeojson(selectedLayerURL, geojson).then((g: any) => {
+      GetCOGStatsGeojson(selectedLayerURL, gg).then((g: any) => {
         const rs: any = {};
         if (g.data) {
           g.data.features.map((m: any) => {
@@ -161,6 +180,22 @@ function MapWrapper(props: any) {
     }
   }, [geojson]);
 
+  const popitup = (e: any, place: string) => {
+    setPopupProps({
+      key: numPopups++,
+      position: e.latlng,
+    });
+    setPopupOpen(true);
+    setClickedPlace(place);
+  };
+
+  const handleDeletePlace = (l: any) => {
+    let geo = { ...geojson };
+    const g = geo.features?.filter((f: any) => f.properties.place !== l);
+    geo.features = g;
+    setGeojson(geo);
+    setPopupOpen(false);
+  };
   /**
    * props for Customlayer component
    */
@@ -199,6 +234,8 @@ function MapWrapper(props: any) {
             geojson={geojson}
             setGeojson={setGeojson}
             setShowStatsButton={setShowStatsButton}
+            handleDeletePlace={handleDeletePlace}
+            popitup={popitup}
           />
           <Control position="topright">
             <Button
@@ -210,7 +247,7 @@ function MapWrapper(props: any) {
                 border: "2px solid #00000077",
                 display: `${showStatsButton ? "" : "none"}`, //Can't remove component since it crashes when there are no features
               }}
-              onClick={generateStats}
+              onClick={() => generateStats()}
             >
               <BarChartIcon />
             </Button>
@@ -306,6 +343,47 @@ function MapWrapper(props: any) {
               </Button>
             )}
           </Control>
+          {popupOpen && (
+            <Popup
+              key={`popup-${popupProps.key}`}
+              position={popupProps.position}
+            >
+              <Box>
+                <Typography sx={{ fontSize: "18px", fontWeight: "bold" }}>
+                  {clickedPlace}
+                </Typography>
+                <Button
+                  sx={{
+                    background: "white",
+                    padding: "3px 0px 3px 0px",
+                    width: "auto",
+                    minWidth: "35px",
+                    border: "2px solid #00000077",
+                    marginRight: "5px",
+                  }}
+                  onClick={() => {
+                    generateStats(clickedPlace);
+                  }}
+                >
+                  <BarChartIcon />
+                </Button>
+                <Button
+                  sx={{
+                    background: "white",
+                    padding: "3px 0px 3px 0px",
+                    width: "auto",
+                    minWidth: "35px",
+                    border: "2px solid #00000077",
+                  }}
+                  onClick={() => {
+                    handleDeletePlace(clickedPlace);
+                  }}
+                >
+                  <DeleteForeverIcon />
+                </Button>
+              </Box>
+            </Popup>
+          )}
         </MapContainer>
         <StatsModal
           rasterStats={rasterStats}

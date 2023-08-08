@@ -3,20 +3,21 @@ import * as L from "leaflet";
 import { FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import type { FeatureCollection } from "geojson";
-import ReactDOMServer from "react-dom/server";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 interface Props {
   geojson: FeatureCollection;
   setGeojson: (geojson: FeatureCollection) => void;
   setShowStatsButton: (showStatsButton: boolean) => void;
+  popitup: (e: any, place: string) => void;
+  handleDeletePlace: (place: string) => void;
 }
 
 export default function Digitizer({
   geojson,
   setGeojson,
   setShowStatsButton,
+  popitup,
+  handleDeletePlace,
 }: Props) {
   const ref = useRef<L.FeatureGroup>(null);
 
@@ -41,23 +42,10 @@ export default function Digitizer({
                 color: "#038c7c",
                 fillColor: "#038c7c",
               };
-              layer.addEventListener("popupopen", attachPopupEvents);
             }
-            layer.bindPopup(
-              ReactDOMServer.renderToString(
-                <>
-                  {layer?.feature?.properties.place}
-                  <div id="layer-delete">
-                    <input
-                      type="hidden"
-                      className="layer-place"
-                      value={layer?.feature?.properties.place}
-                    ></input>
-                    <DeleteForeverIcon />
-                  </div>
-                </>
-              )
-            );
+            layer.addEventListener("click", (e) => {
+              popitup(e, layer?.feature?.properties.place);
+            });
             ref.current?.addLayer(layer);
           }
         }
@@ -83,25 +71,6 @@ export default function Digitizer({
     }
   };
 
-  const handleDelete = (l: any) => {
-    const geo = ref.current?.toGeoJSON();
-    if (geo?.type === "FeatureCollection") {
-      const g = geo.features?.filter((f: any) => f.properties.place !== l);
-      geo.features = g;
-      setGeojson(geo);
-    }
-  };
-
-  const attachPopupEvents = () => {
-    const buttonEl = document.getElementById("layer-delete");
-    if (buttonEl && buttonEl.children.length > 0) {
-      buttonEl.addEventListener("click", () => {
-        const place = (buttonEl.children[0] as HTMLInputElement).value;
-        handleDelete(place);
-      });
-    }
-  };
-
   const layerOptions = {
     shapeOptions: {
       color: "#038c7c",
@@ -113,7 +82,7 @@ export default function Digitizer({
         position="topright"
         onEdited={handleChange}
         onCreated={handleChange}
-        onDeleted={handleDelete}
+        onDeleted={handleDeletePlace}
         draw={{
           rectangle: layerOptions,
           circle: false,
