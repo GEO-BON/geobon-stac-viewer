@@ -294,10 +294,20 @@ function IOSidebar(props: any) {
 
   useEffect(() => {
     GetStac("/collections", {}).then((res: any) => {
-      const items: any = res.data.collections.map((c: any) => ({
-        option: c.title,
-        value: c.id,
-      }));
+      const items: any = res.data.collections
+        .map((c: any) => ({
+          option: c.title,
+          value: c.id,
+        }))
+        .sort(function (a: any, b: any) {
+          if (a.option < b.option) {
+            return -1;
+          }
+          if (a.option > b.option) {
+            return 1;
+          }
+          return 0;
+        });
       setCollectionList(items);
     });
   }, []);
