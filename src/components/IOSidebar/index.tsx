@@ -344,7 +344,7 @@ function IOSidebar(props: any) {
   return (
     <Grid sx={{ width: "300px", marginLeft: "15px" }}>
       <Title>
-        <MainTitle>{t("IO")}</MainTitle>
+        <MainTitle>{t("GEO BON STAC Viewer")}</MainTitle>
         <MainSubTitle>
           {"Explore layers available in the Bon-in-a-Box STAC catalog"}
         </MainSubTitle>
