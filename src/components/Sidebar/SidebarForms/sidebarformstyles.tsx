@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { colors } from "src/styles";
+import { colors } from "../../../styles";
 import { SideContainer } from "../sidebarstyle";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";

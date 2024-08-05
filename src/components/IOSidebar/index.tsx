@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
-import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
 import { Selector } from "bq-react-lib";
 import {
   Title,
@@ -9,7 +9,7 @@ import {
   SelectorTitle,
   MainTitle,
   MainSubTitle,
-} from "src/components/Sidebar/SidebarForms/sidebarformstyles";
+} from "../Sidebar/SidebarForms/sidebarformstyles";
 import _ from "underscore";
 import { GetStac, GetStacSearch, GetCOGBounds } from "../helpers/api";
 import { useNavigate, useParams } from "react-router-dom";
@@ -263,7 +263,7 @@ function IOSidebar(props: any) {
               res.data.assets[Object.keys(res.data.assets)[0]].href
             );
             setSelectedLayerAssetName(Object.keys(res.data.assets)[0]);
-            navigate(`/apps/io-layers/${selectedCollection}/${val}`);
+            navigate(`/viewer/${selectedCollection}/${val}`);
           }
         }
       );

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { colors, Container } from "../../styles";
-import "src/css/external/common.css";
+import "../../css/external/common.css";
 
 export const SideContainer = styled(Container)`
   color: ${colors.white};
