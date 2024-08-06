@@ -346,7 +346,7 @@ function IOSidebar(props: any) {
       <Title>
         <MainTitle>{t("GEO BON STAC Viewer")}</MainTitle>
         <MainSubTitle>
-          {"Explore layers available in the Bon-in-a-Box STAC catalog"}
+          {"Explore layers available in the BON in a Box STAC catalog"}
         </MainSubTitle>
       </Title>
       <Stack spacing={{ xs: 1, sm: 2, md: 2 }} sx={{ width: "100%" }}>

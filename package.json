@@ -55,7 +55,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "toprod": "vite build && sudo rsync -r dist/ /var/www/geobon-stac-viewer/",
+    "toprod": "vite build && sudo rsync -r dist/ /var/www/viewer/",
     "test": "jest",
     "lint": "eslint './src/**/*.{d.ts,ts,tsx}'",
     "prepare": "husky install"
