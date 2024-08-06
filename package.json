@@ -55,7 +55,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "toprod": "vite build && rsync build/* $COLEO_PORTAL_HOST:/var/www/inventaires",
+    "toprod": "vite build && sudo rsync -r dist/ /var/www/geobon-stac-viewer/",
     "test": "jest",
     "lint": "eslint './src/**/*.{d.ts,ts,tsx}'",
     "prepare": "husky install"
