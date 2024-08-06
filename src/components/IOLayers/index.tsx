@@ -103,7 +103,11 @@ export default function IOLayers(props: any) {
   }, [selectedLayerURL, logTransform, colormap]);
 
   useEffect(() => {
-    if (location.pathname === "/viewer" || location.pathname === "/viewer/") {
+    if (
+      location.pathname === "/viewer" ||
+      location.pathname === "/viewer/" ||
+      location.pathname === "/"
+    ) {
       navigate("/viewer/chelsa-clim/bio1");
     }
   }, [location]);
