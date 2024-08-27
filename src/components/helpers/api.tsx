@@ -76,7 +76,7 @@ export const addTranslation = async (
 
 export const GetStac = async (endpoint: string, paramObj: any) => {
   let result;
-  const base_url = "https://stac.geobon.org/" as string;
+  const base_url = "https://stac.geobon.org" as string;
   try {
     result = await axios({
       method: "get",
