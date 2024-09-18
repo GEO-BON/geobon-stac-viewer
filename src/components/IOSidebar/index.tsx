@@ -342,9 +342,16 @@ function IOSidebar(props: any) {
   }, [collection, item]);
 
   return (
-    <Grid sx={{ width: "300px", marginLeft: "15px" }}>
+    <Grid container sx={{ width: "300px", marginLeft: "15px" }}>
       <Title>
-        <MainTitle>{t("GEO BON STAC Viewer")}</MainTitle>
+        <Grid container spacing={2}>
+          <Grid item xs={4}>
+            <img src="/viewer/logo192.png" style={{width:"100%"}} />
+          </Grid>
+          <Grid item xs={8}>
+            <MainTitle>{t("GEO BON")}<br />{t("STAC Viewer")}</MainTitle>
+          </Grid>
+        </Grid>
         <MainSubTitle>
           {"Explore layers available in the BON in a Box STAC catalog"}
         </MainSubTitle>
