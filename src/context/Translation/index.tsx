@@ -28,7 +28,7 @@ export const TranslateWrapper = (props: any) => {
   }, []);
 
   document.title = t(
-    "Réseau d'inventaires terrain de la biodiversité du Québec"
+    "STAC Viewer"
   );
 
   return (
