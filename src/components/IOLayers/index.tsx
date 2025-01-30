@@ -24,7 +24,9 @@ export default function IOLayers(props: any) {
   const [selectedLayerAssetName, setSelectedLayerAssetName] = useState("");
   const [logTransform, setLogTransform] = useState(false);
   const [selectedLayerURL, setSelectedLayerURL] = useState("");
-  const [selectedLayerTiles, setSelectedLayerTiles] = useState("");
+  const [selectedLayerTiles, setSelectedLayerTiles] = useState(
+    "https://tiler.biodiversite-quebec.ca/cog/tiles/4/5/6?url=https://object-arbutus.cloud.computecanada.ca/bq-io/io/CHELSA/climatologies/CHELSA_bio1_1981-2010_V.2.1.tif&rescale=2265,3004&assets=bio1&colormap_name=inferno&bidx=1&expression=b1"
+  );
   const [legend, setLegend] = useState({});
   const [colormap, setColormap] = useState("inferno");
   const [colormapList, setColormapList] = useState(quantcmaps);
@@ -127,8 +129,8 @@ export default function IOLayers(props: any) {
 
   return (
     <AppContainer id="appcontainer">
-      <LeftContentGroup {...leftContentProps} />
       <RightContentGroup {...rightContentProps} />
+      <LeftContentGroup {...leftContentProps} />
       <GlobalStyle />
     </AppContainer>
   );

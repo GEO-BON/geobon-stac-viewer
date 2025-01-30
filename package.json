@@ -26,6 +26,7 @@
     "leaflet-extra-markers": "^1.2.1",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
+    "maplibre-gl": "^5.1.0",
     "markdown-to-jsx": "^7.1.7",
     "mui-image": "^1.0.7",
     "npyjs": "^0.4.0",
