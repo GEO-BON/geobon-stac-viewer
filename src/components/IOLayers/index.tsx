@@ -17,7 +17,7 @@ import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 
 export default function IOLayers(props: any) {
   const { textInCard, cardBGHref, onClick } = props;
-  const quantcmaps = ["inferno", "spectral", "terrain", "coolwarm"];
+  const quantcmaps = ["inferno", "spectral", "terrain", "coolwarm", "hot"];
   const qualcmaps = ["tab10", "tab20", "tab20b"];
   const [collection, setCollection] = useState("chelsa-clim");
   const [item, setItem] = useState("bio1");
@@ -82,7 +82,11 @@ export default function IOLayers(props: any) {
         let expression = "b1";
         if (logTransform) {
           expression = "sqrt(b1)";
+          if (selectedLayerURL.includes("gbif_heatmaps")) {
+            expression = "log(b1+1)";
+          }
         }
+
         const obj = {
           assets: selectedLayerAssetName,
           colormap_name: colormap,
