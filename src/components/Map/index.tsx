@@ -135,7 +135,7 @@ export default function Map(props: any) {
         width: "100vw",
         height: "100vh",
         zIndex: "0",
-        background: "url('/night-sky.png')",
+        background: "url('/viewer/night-sky.png')",
       }}
     ></div>
   );
