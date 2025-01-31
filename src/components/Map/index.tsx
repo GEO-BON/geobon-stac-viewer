@@ -105,6 +105,12 @@ export default function Map(props: any) {
         },
       });
       map.addControl(new maplibregl.GlobeControl());
+      map.addControl(
+        new maplibregl.NavigationControl({
+          showZoom: true,
+          showCompass: false,
+        })
+      );
       setMapp(map);
       return () => {
         map.remove();
