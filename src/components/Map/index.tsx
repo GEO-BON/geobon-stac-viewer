@@ -1,18 +1,17 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+
 import { useLocation } from "react-router-dom";
 
 export default function Map(props: any) {
-  const { selectedLayerTiles } = props;
+  const { selectedLayerTiles, opacity } = props;
 
   const [showPopup, setShowPopup] = useState<boolean>(true);
   const [clickCoor, setClickCoor]: any = useState([0, 0]);
   const [mapp, setMapp]: any = useState(false);
   const [search, setSearch] = useState("");
   const mapRef = useRef();
-
-  const [opacity, setOpacity]: any = useState(1);
 
   useEffect(() => {
     // this is so we share one instance across the JS code and the map renderer
@@ -36,6 +35,13 @@ export default function Map(props: any) {
               tiles: [selectedLayerTiles],
               tileSize: 256,
             },
+            terrain: {
+              type: "raster-dem",
+              tiles: [
+                "https://tiler.biodiversite-quebec.ca/cog/tiles/{z}/{x}/{y}?url=https://object-arbutus.cloud.computecanada.ca/bq-io/io/earthenv/topography/elevation_1KMmn_GMTEDmn.tif&rescale=0,2013.2877197265625&assets=data&colormap_name=inferno&bidx=1&expression=b1",
+              ],
+              tileSize: 256,
+            },
             background: {
               type: "raster",
               tiles: [
@@ -44,44 +50,58 @@ export default function Map(props: any) {
               tileSize: 256,
             },
           },
+          terrain: { source: "terrain", exaggeration: 0.05 },
           layers: [
             /*{
             id: "sat",
             type: "raster",
             source: "satellite",
           },*/
+
             {
               id: "back",
               type: "raster",
               source: "background",
             },
             {
+              id: "hillsh",
+              type: "hillshade",
+              source: "terrain",
+              paint: {
+                "hillshade-exaggeration": 0.05,
+              },
+              layout: {
+                visibility: "none",
+              },
+            },
+            {
               id: "cog",
               type: "raster",
               source: "cog",
               paint: {
-                "raster-opacity": 0.7,
+                "raster-opacity": opacity / 100,
               },
             },
           ],
-          /*sky: {
-          "atmosphere-blend": [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            0,
-            1,
-            5,
-            1,
-            7,
-            0,
-          ],
-        },
-        light: {
-          anchor: "viewport",
-          position: [1.5, 90, 50],
-          intensity: 0.05,
-        },*/
+          sky: {
+            "atmosphere-blend": [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              0,
+              1,
+              5,
+              1,
+              7,
+              0,
+            ],
+          },
+          light: {
+            anchor: "viewport",
+            position: [1.5, 90, 40],
+            intensity: 0.25,
+            color: "#222",
+          },
         },
       });
       map.addControl(new maplibregl.GlobeControl());
@@ -95,33 +115,22 @@ export default function Map(props: any) {
   useEffect(() => {
     if (mapp && selectedLayerTiles) {
       mapp.getSource("cog").setTiles([selectedLayerTiles]);
-      /*mapp.removeSource("cog");
-      mapp.removeLayer("cog");
-      mapp.addSource("cog", {
-        type: "raster",
-        tiles: [selectedLayerTiles],
-        tileSize: 256,
-      });
-      mapp.addLayer({
-        id: "cog",
-        type: "raster",
-        source: "cog",
-        paint: {
-          "raster-opacity": 0.7,
-        },
-      });
-      /*map.style.sourceCaches["cog"].clearTiles();
-      map.style.sourceCaches["cog"].update(map.transform);*/
+      mapp.setPaintProperty("cog", "raster-opacity", opacity / 100);
       mapp.triggerRepaint();
     }
     return () => {};
-  }, [selectedLayerTiles]);
+  }, [selectedLayerTiles, opacity]);
 
   return (
     <div
       id="App"
       className="App"
-      style={{ width: "100vw", height: "100vh", zIndex: "0" }}
+      style={{
+        width: "100vw",
+        height: "100vh",
+        zIndex: "0",
+        background: "url('/night-sky.png')",
+      }}
     ></div>
   );
 }

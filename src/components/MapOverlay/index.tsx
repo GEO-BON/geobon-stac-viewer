@@ -10,11 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import InsightsIcon from "@mui/icons-material/Insights";
-import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
-import TravelExploreIcon from "@mui/icons-material/TravelExplore";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { ColorPicker } from "../ColormapPicker";
 import MSMapSlider from "../CustomMap/MSMapSlider";
 import type { FeatureCollection } from "geojson";
 
@@ -26,9 +22,17 @@ import type { FeatureCollection } from "geojson";
 function MapOverlay(props: any) {
   //const generalState = useSelector((state: any) => state.reducerState);
   //const drawerOpen = useSelector((state: any) => state.reducerState.drawerOpen);
-  const { selectedLayerURL, isTimeSeriesCollection, timeSeriesLayers } = props;
+  const {
+    selectedLayerURL,
+    isTimeSeriesCollection,
+    timeSeriesLayers,
+    opacity,
+    setOpacity,
+    colormap,
+    setColormap,
+    colormapList,
+  } = props;
   const [mapWidth, setMapWidth] = useState("100vw");
-  const [opacity, setOpacity] = useState(80);
   const [openStatsModal, setOpenStatsModal] = useState(false);
   const [showStatsButton, setShowStatsButton] = useState(false);
   const [activeSearch, setActiveSearch] = useState(false);
@@ -62,6 +66,11 @@ function MapOverlay(props: any) {
         width={200}
         notifyChange={(newValue: any) => setOpacity(newValue)}
         value={opacity}
+      />
+      <ColorPicker
+        setColormap={setColormap}
+        colormap={colormap}
+        colormapList={colormapList}
       />
     </>
   );
