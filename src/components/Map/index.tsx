@@ -2,19 +2,13 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
-import { useLocation } from "react-router-dom";
-
 export default function Map(props: any) {
   const { selectedLayerTiles, opacity } = props;
 
-  const [showPopup, setShowPopup] = useState<boolean>(true);
-  const [clickCoor, setClickCoor]: any = useState([0, 0]);
   const [mapp, setMapp]: any = useState(false);
-  const [search, setSearch] = useState("");
   const mapRef = useRef();
 
   useEffect(() => {
-    // this is so we share one instance across the JS code and the map renderer
     if (selectedLayerTiles && !mapp) {
       const map = new maplibregl.Map({
         container: "App",
