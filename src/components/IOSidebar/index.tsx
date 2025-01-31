@@ -248,7 +248,12 @@ function IOSidebar(props: any) {
       } else {
         val = selectedLevel1;
       }
-      if (val.indexOf("-lc") !== -1 || val.indexOf("cobertura") !== -1) {
+      if (
+        val.includes("-lc") ||
+        val.includes("cobertura") ||
+        val.includes("land_cover") ||
+        val.includes("land_use")
+      ) {
         setColormap("tab10");
         setColormapList(qualcmaps);
       } else if (qualcmaps.includes(colormap)) {
@@ -346,10 +351,14 @@ function IOSidebar(props: any) {
       <Title>
         <Grid container spacing={2}>
           <Grid item xs={4}>
-            <img src="/viewer/logo192.png" style={{width:"100%"}} />
+            <img src="/viewer/logo192.png" style={{ width: "100%" }} />
           </Grid>
           <Grid item xs={8}>
-            <MainTitle>{t("GEO BON")}<br />{t("STAC Viewer")}</MainTitle>
+            <MainTitle>
+              {t("GEO BON")}
+              <br />
+              {t("STAC Viewer")}
+            </MainTitle>
           </Grid>
         </Grid>
         <MainSubTitle>
