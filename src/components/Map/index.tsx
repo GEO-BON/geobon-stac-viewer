@@ -32,7 +32,7 @@ export default function Map(props: any) {
             terrain: {
               type: "raster-dem",
               tiles: [
-                "https://tiler.biodiversite-quebec.ca/cog/tiles/{z}/{x}/{y}?url=https://object-arbutus.cloud.computecanada.ca/bq-io/io/earthenv/topography/elevation_1KMmn_GMTEDmn.tif&rescale=0,2013.2877197265625&assets=data&colormap_name=binary&bidx=1&expression=b1",
+                "https://tiler.biodiversite-quebec.ca/cog/tiles/{z}/{x}/{y}?url=https://object-arbutus.cloud.computecanada.ca/bq-io/io/earthenv/topography/elevation_1KMmn_GMTEDmn.tif&rescale=0,2013&bidx=1&expression=b1",
                 /*"https://tiler.biodiversite-quebec.ca/cog/tiles/{z}/{x}/{y}?url=https://object-arbutus.cloud.computecanada.ca/bq-io/io/gbif_heatmaps/gbif_all_density_05-2024.tif&rescale=0,1&assets=data&colormap_name=binary&bidx=1&expression=b1",*/
               ],
               tileSize: 256,
@@ -45,7 +45,7 @@ export default function Map(props: any) {
               tileSize: 256,
             },
           },
-          terrain: { source: "terrain", exaggeration: 0.1 },
+          terrain: { source: "terrain", exaggeration: 0.025 },
           layers: [
             /*{
             id: "sat",
@@ -72,11 +72,11 @@ export default function Map(props: any) {
               type: "hillshade",
               source: "terrain",
               paint: {
-                "hillshade-exaggeration": 0.02,
+                "hillshade-exaggeration": 0.01,
                 "hillshade-shadow-color": "#473B24",
               },
               layout: {
-                visibility: "none",
+                visibility: "visible",
               },
             },
           ],
@@ -97,7 +97,7 @@ export default function Map(props: any) {
             anchor: "viewport",
             position: [1.5, 90, 40],
             intensity: 0.25,
-            color: "#222",
+            color: "#555",
           },
         },
       });
